@@ -17,6 +17,7 @@ header-includes:
 - \renewcommand{\footrulewidth}{0.4pt}
 ---
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 <style type="text/css">
 body{
   font-size: 12px;
@@ -32,6 +33,8 @@ h1 {
 }
 </style>
 
+=======
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
                       collapse=TRUE,     # collapse by default
@@ -55,7 +58,11 @@ df = data.frame(scient, classic)
 ggdata = gather(df, 'group', 'result', c(1,2))
 ```
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 ## a)
+=======
+### a)
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 
 ```{r}
 summary(scient)
@@ -83,6 +90,7 @@ gg
 
 Hier eignet sich ein nichtparametrischer Test aus mehrerer Hinsicht:
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 1. Da unsere StichprobengrÃ¶ÃŸe mit n=10 klein ist, gibt es eine geringere TrennschÃ¤rfe und eine a priori Annahme der Verteilung unserer Stichproben stellt sich schwierig dar.
 
 2. Unsere Stichproben sind ordinalskaliert.
@@ -90,6 +98,15 @@ Hier eignet sich ein nichtparametrischer Test aus mehrerer Hinsicht:
 3. Wir mÃ¶chten auf eine Verschiebung in eine bestimmte Richtung testen.
 
 ## b)
+=======
+1. Da unsere Stichprobengröße mit n=10 klein ist, gibt es eine geringere Trennschärfe und eine a priori Annahme der Verteilung unserer Stichproben stellt sich schwierig dar.
+
+2. Unsere Stichproben sind ordinalskaliert.
+
+3. Wir möchten auf eine Verschiebung in eine bestimmte Richtung testen.
+
+### b)
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 
 ```{r}
 load('applicants.RData')
@@ -110,9 +127,15 @@ Seien $Y_1,\dots,Y_{10}$ iid, grades der scient.
 
 Sei $F_X(x)$ die Verteilungsfunktion von $X_i$ und $F_X(x) = F_Y(x + \theta)$.
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 Wir formulieren als Nullhypothese, dass die scient 
 
 $H_0:\{\theta < 0\}$ vs $H_1: \{\theta \geq 0\}$
+=======
+Wir formulieren als Nullhypothese, dass die Verteilungen gleich sind
+
+$H_0:\{\theta = 0\}$ vs $H_1: \{\theta \neq 0\}$
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 
 und Testen zu einem Signifikanzniveau von $5\%$ sprich wir lehnen die Nullyphothese ab, wenn
 
@@ -120,17 +143,27 @@ $$
 z = \frac{T-\frac{n(n+m+1)}2}{\sqrt{\frac{nm(n+m+1)}{12}}} < -1.64
 $$
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 mit $T := \sum_{i=1}^10 \operatorname{rg}(X_i)$ fÃ¼r $n = 10, m = 10$.
 Um $T$ berechnen zu kÃ¶nnen fassen wir beide DatensÃ¤tze zusammen, ordnen diese Anhand der Werte und die RÃ¤nge $\operatorname{rg}(X_i)$ berechnen wir anschlieÃŸend, indem die Werte einen aufsteigenden Rang angefangen bei $1$ zugeordnet bekommen, sprich $\operatorname{rg}(X_8) = 1$ und $\operatorname{rg}(Y_7) = 20$.
 
 Wir erhalten $T = `r classic_ranksum`$ und $z = `r z` < -1.64$ und somit lehnen wir die Nullhypothese zu einem Signifikanzniveau von $5\%$ ab. Die Testgruppe classic schneidet bei Mathematik Tests also signifikant schlechter ab als die Testgruppe scient.
 
 ## c)
+=======
+mit $T := \sum_{i=1}^10 \operatorname{rg}(X_i)$ für $n = 10, m = 10$.
+Um $T$ berechnen zu können fassen wir beide Datensätze zusammen, ordnen diese Anhand der Werte und die Ränge $\operatorname{rg}(X_i)$ berechnen wir anschließend, indem die Werte einen aufsteigenden Rang angefangen bei $1$ zugeordnet bekommen, sprich $\operatorname{rg}(X_8) = 1$ und $\operatorname{rg}(Y_7) = 20$.
+
+Wir erhalten $T = `r classic_ranksum`$ und $z = `r z` < -1.64$ und somit lehnen wir die Nullhypothese zu einem Signifikanzniveau von $5\%$ ab. Die Testgruppe classic schneidet bei Mathematik Tests also signifikant schlechter ab als die Testgruppe scient.
+
+### c)
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 
 ```{r}
 wilcox.test(scient,classic,alternative = 'greater', paired = FALSE)
 ```
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 Mit einem $\alpha = 5\%$ wird im obigen Test die Nullhyothese ($\theta < 0$) abgelehnt ($\text{p-value} = 0.009272 < 0.05$). Dies bedeutet, die Scores der Naturwissenschaftsstudenten sind signifikant hÃ¶her als die Scores der Nicht-Naturwissenschaftsstudenten.
 
 Wir erhalten das gleiche Testergebnis wie bei der Berechnung per Hand nur gibt der eingebaute Wilcoxon Rangsummentest eine andere Rangsumme aus $W = 81$, die mit keiner der beiden hÃ¤ndisch berechneten Rangsummen Ã¼bereinstimmt $w_X = 74, w_Y = 136$. R wird intern wohl etwas anderes rechnen.
@@ -145,6 +178,18 @@ Alternativ nehmen wir das Minimum der $w$ also $74$ und vergleichen dies in der 
 Die Fragestellung ist verbunden, da unsere Daten aus der gleichen Stichprobe kommen und symmetrisch sind.  
 
 ## b)
+=======
+Mit einem $\alpha = 5\%$ wird im obigen Test die Nullhyothese ($\theta < 0$) abgelehnt ($\text{p-value} = 0.009272 < 0.05$). Dies bedeutet, die Scores der Naturwissenschaftsstudenten sind signifikant höher als die Scores der Nicht-Naturwissenschaftsstudenten.
+
+Wir erhalten das gleiche Testergebnis wie bei der Berechnung per Hand nur gibt der eingebaute Wilcoxon Rangsummentest eine andere Rangsumme aus $W = 81$, die mit keiner der beiden händisch berechneten Rangsummen übereinstimmt $w_X = 74, w_Y = 136$. R wird intern wohl etwas anderes rechnen.
+
+## Aufgabe 2
+### a)
+
+Die Fragestellung ist verbunden, da unsere Daten aus der gleichen Stichprobe kommen und symmetrisch sind.  
+
+### b)
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 ```{r}
 load("HRR.RData")
 par(mfrow=c(1,2))
@@ -153,9 +198,15 @@ boxplot(HRR_yes, ylab='Frequenz', xlab='Yes')
 hist(HRR_no)
 hist(HRR_yes)
 ```
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 Hier eignet sich, aus den gleichen GrÃ¼nden wie in Aufgabe 1, ein nichtparametrischer Test zur ÃœberprÃ¼fung der Hypothesen.
 
 ## c)
+=======
+Hier eignet sich, aus den gleichen Gründen wie in Aufgabe 1, ein nichtparametrischer Test zur Überprüfung der Hypothesen.
+
+### c)
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 
 ```{r}
 load('HRR.RData')
@@ -167,17 +218,29 @@ wm = sum(df[df$D < 0,]$rank)
 z = (wp - 8*9/4)/sqrt(8*9*17/24)
 ```
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 Wir fÃ¼hren einen Wilcoxon-Vorzeichen-Rangtest auf den Differenzen der Stichproben durch.
+=======
+Wir führen einen Wilcoxon-Vorzeichen-Rangtest auf den Differenzen der Stichproben durch.
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 
 Seien $X_1,\dots,X_{8}$ iid, Herzfrequenz ohne Monitoring.
 Seien $Y_1,\dots,Y_{8}$ iid, Herzfrequenz mit Monitoring.
 Sei $D_i := X_i - Y_i$.
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 Als Nullhypothese nehmen wir an, dass dass die zentrale Lage der Verteilung kleiner $0$ ist (wir nehmen an, dass die Herzfrequenz ohne Monitoring nicht hÃ¶her ist), also
 
 $H_0:\{{D_i}_{\operatorname{med}} < 0\}$ vs $H_1: \{{D_i}_{\operatorname{med}} \geq 0\}$
 
 Nun geben wir den Differenzen RÃ¤nge, angefangen bei 1 und das ohne Sortierung und bilden anschlieÃŸend die Summen Ã¼ber die positiven und negativen Zahlen und erhalten:
+=======
+Als Nullhypothese nehmen wir an, dass dass die zentrale Lage der Verteilung bei $0$ liegt, also
+
+$H_0:\{{D_i}_{\operatorname{med}} = 0\}$ vs $H_1: \{{D_i}_{\operatorname{med}} \neq 0\}$
+
+Nun geben wir den Differenzen Ränge, angefangen bei 1 und das ohne Sortierung und bilden anschließen die Summen über die positiven und negativen Zahlen und erhalten:
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 
 \begin{align*}
 w_+ = `r wp`\\
@@ -188,7 +251,11 @@ T = \operatorname{min}(w_+, w_-) = w_- = `r wm`
 Da $n = 8$ und Test zweiseitig zu $\alpha = 0.1$ muss nach Tabelle $5$ unterschritten werden, damit die Nullhypothese abgelehnt werden muss. Wir haben aber $T = 15 > 5$ somit lehnen wir die Nullhypothese nicht ab. Es gibt keinen signifikanten Unterschied zwischen den Daten.
 
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 ## d)
+=======
+### d)
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 
 ```{r}
 wilcox.test(HRR_yes, HRR_no, paired=TRUE, alternative = 'less')
@@ -198,6 +265,7 @@ Mit einem $\alpha = 5\%$ wird im obigen Test die Nullhyothese ($\theta$ < 0) nic
 
 ## Aufgabe 3
 
+<<<<<<< HEAD:praktium02/praktikum02.rmd
 ## a)
 
 FÃ¼r den Permutationstest spielt die Reihnfolge welchen Wert man aus der jeweiligen Gruppe zieht keine Rolle. Folglich kann man die Anzahl an Permutationen berechnen, indem man die Anzahl Permutationen mit Wiederholung fÃ¼r 5 Elemente aus 2 Gruppen mit je 2 und 3 Elementen berechnet. Wir erhalten:
@@ -210,6 +278,15 @@ Wir haben nur 10 Permutationen, was bedeutet, dass jedes $\alpha$ mindestens $10
 
 
 ## c)
+=======
+### a)
+
+Für den Permutationstest spielt die Reihnfolge welchen Wert man aus der jeweiligen Gruppe zieht keine Rolle. Folglich kann man die Anzahl an Permutationen berechnen, indem man die Anzahl Permutationen mit Wiederholung für 5 Elemente aus 2 Gruppen mit je 2 und 3 Elementen berechnet. Wir erhalten:
+
+$\binom{2+3}{2} = 10$
+
+### c)
+>>>>>>> origin/max:praktikum_02/praktikum02.rmd
 ```{r}
 library(perm)
 Braeburn = c(55, 104)
