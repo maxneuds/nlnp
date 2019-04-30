@@ -1,0 +1,141 @@
+---
+output: pdf_document
+header-includes: 
+- \usepackage[utf8]{inputenc}
+- \usepackage[T1]{fontenc}
+- \usepackage[ngerman]{babel}
+- \usepackage{amsmath,amssymb,amsthm}
+- \usepackage{dsfont}
+- \usepackage{listings}
+- \usepackage{floatrow}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \fancyhead[C,C]{Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}
+- \fancyhead[L]{}
+- \fancyhead[R]{}
+- \fancyfoot[C,C]{\thepage}
+- \renewcommand{\footrulewidth}{0.4pt}
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
+                      collapse=TRUE,     # collapse by default
+                      echo=TRUE,         # echo code by default
+                      comment = "#>",    # change comment character
+                      fig.width = 10,     # set figure width
+                      out.width = "100%", # set width of displayed images
+                      warning=TRUE,      # show R warnings
+                      message=FALSE)     # show R messages
+```
+
+<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
+
+## Aufgabe 1
+### a)
+```{r}
+x <- runif(100,1,5)
+residuen <- rnorm(100,0,1)
+b <- 4
+y <- b*log(x)+residuen
+```
+
+### b)
+```{r}
+lmlinear <- lm(y~x)
+lmpoly <- lm(y~x+I(x^2)+I(x^3)+I(x^4)+I(x^5))
+
+fdachlin <- lmlinear$coefficients  %*% c(1,3)
+fdachpoly <- lmpoly$coefficients %*% c(1,3,3^2,3^3,3^4,3^5)
+```
+
+### c)
+```{r}
+y2 <- b*log(3)+rnorm(1)
+
+quadvolin <- (y2-fdachlin)^2
+quadvopol <- (y2-fdachpoly)^2
+quadvolin
+quadvopol
+```
+### d)
+```{r}
+alllin <- matrix(NA,nrow=10000,ncol=6)
+colnames(alllin) <- c("fdach","y", "quadVor","EBias", "VarFDach","EQuadVor")
+allpol <- matrix(NA,nrow=10000,ncol=6)
+colnames(allpol) <- c("fdach","y", "quadVor","EBias", "VarFDach","EQuadVor")
+for (i in 1:10000){
+  x <- runif(100,1,5)
+  residuen <- rnorm(100,0,1)
+  b <- 4
+  y <- b*log(x)+residuen
+  lmlinear <- lm(y~x)
+  lmpoly <- lm(y~x+I(x^2)+I(x^3)+I(x^4)+I(x^5))
+  alllin[i,1] <- lmlinear$coefficients  %*% c(1,3)
+  allpol[i,1] <- lmpoly$coefficients %*% c(1,3,3^2,3^3,3^4,3^5)
+  
+  alllin[i,2] <- b*log(3)+rnorm(1)
+  allpol[i,2] <- alllin[i,2]
+  
+  alllin[i,3] <- (alllin[i,2]-alllin[i,1])^2
+  allpol[i,3] <- (allpol[i,2]-allpol[i,1])^2
+}
+alllin[,4] <- mean(alllin[,1])-4*log(3)
+allpol[,4] <- mean(allpol[,1])-4*log(3)
+  
+alllin[,5] <- var(alllin[,1])
+allpol[,5] <- var(allpol[,1])
+  
+alllin[,6] <- mean((y-alllin[,1])^2)
+allpol[,6] <- mean((y-allpol[,1])^2)
+```
+
+### e)
+```{r}
+head(alllin[,4:6],1)
+head(allpol[,4:6],1)
+```
+#### i)
+Das lineare Regressionsmodell zeigt einen ausgepr??gteren Bias und eine h??here Varianz als das polynomiale Modell. Der quadrierte Vorhersagefehler ist beim linearen Modell etwas kleiner als der des polynomialen.
+
+#### ii)
+Eine h??here Varianz f??hrt zu einem niedrigeren Bias (Bias-Varianz-Trade-Off).
+Man kann erkennen, dass im linearen Regressionsmodell ein enorm h??herer Bias als im polynomialen Regressionsmodell vorliegt, die Varianz ist im linearen Fall zudem kleiner. Dies spricht f??r Overfitting, da der Erwartungswertsch??tzer f??r den erwarteten quadratischen Vorhersagefehler im linearen Modell unmerklich geringer ist als im polynomialen Modell. 
+
+#### iii)
+```{r}
+alllin20 <- matrix(NA,nrow=10000,ncol=6)
+colnames(alllin20) <- c("fdach","y", "quadVor","EBias", "VarFDach","EQuadVor")
+allpol20 <- matrix(NA,nrow=10000,ncol=6)
+colnames(allpol20) <- c("fdach","y", "quadVor","EBias", "VarFDach","EQuadVor")
+for (i in 1:10000){
+  x <- runif(20,1,5)
+  residuen <- rnorm(20,0,1)
+  b <- 4
+  y <- b*log(x)+residuen
+  lmlinear <- lm(y~x)
+  lmpoly <- lm(y~x+I(x^2)+I(x^3)+I(x^4)+I(x^5))
+  alllin20[i,1] <- lmlinear$coefficients  %*% c(1,3)
+  allpol20[i,1] <- lmpoly$coefficients %*% c(1,3,3^2,3^3,3^4,3^5)
+  
+  alllin20[i,2] <- b*log(3)+rnorm(1)
+  allpol20[i,2] <- alllin20[i,2]
+  
+  alllin20[i,3] <- (alllin20[i,2]-alllin20[i,1])^2
+  allpol20[i,3] <- (allpol20[i,2]-allpol20[i,1])^2
+}
+alllin20[,4] <- mean(alllin20[,1])-4*log(3)
+allpol20[,4] <- mean(allpol20[,1])-4*log(3)
+  
+alllin20[,5] <- var(alllin20[,1])
+allpol20[,5] <- var(allpol20[,1])
+  
+alllin20[,6] <- mean((y-alllin20[,1])^2)
+allpol20[,6] <- mean((y-allpol20[,1])^2)
+```
+```{r}
+head(alllin20[,4:6],1)
+head(allpol20[,4:6],1)
+head(alllin[,4:6],1)
+head(allpol[,4:6],1)
+```
+Im Vergleich zu n=100 ist die Varianz der Modelle bei n=20 deutlich h??her. Bias bleibt ungef??hr gleich. Der Erwartungswertsch??tzer f??r den erwarteten quadratischen Vorhersagefehler ist zwar erh??ht im Vergleich zu n=100, der absolute Abstand zwischen den beiden Modellen bleibt aber ungef??hr gleich.
