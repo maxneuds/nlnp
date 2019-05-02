@@ -10,7 +10,7 @@ header-includes:
 - \usepackage{floatrow}
 - \usepackage{fancyhdr}
 - \pagestyle{fancy}
-- \fancyhead[C,C]{Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}
+- '\fancyhead[C,C]{Gruppe 5: Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}'
 - \fancyhead[L]{}
 - \fancyhead[R]{}
 - \fancyfoot[C,C]{\thepage}
@@ -45,13 +45,17 @@ knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
 
 <!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
 
+```{r}
+set.seed(42)
+```
+
 # Aufgabe 1
 
 ## a)
 
 ```{r}
 gendata = function (x, beta) {
-  return (beta * log(x) + rnorm(1))
+  return (beta * log(x) + rnorm(x))
 }
 x <- runif(100,1,5)
 y <- gendata(x, 4)
@@ -62,7 +66,7 @@ df = data.frame(x,y)
 
 ```{r}
 lmlinear = lm(y~x, data=df)
-fdachlin <- lmlinear$coefficients  %*% c(1,3)
+fdachlin <- as.vector(lmlinear$coefficients  %*% c(1,3))
 plot(df$x, df$y)
 abline(lmlinear, col="red")
 ```
@@ -71,7 +75,7 @@ Hier sehen wir die generierten Punkte und die lineare Regression und wir erhalte
 
 ```{r}
 lmpoly <- lm(y~x+I(x^2)+I(x^3)+I(x^4)+I(x^5))
-fdachpoly <- lmpoly$coefficients %*% c(1,3,3^2,3^3,3^4,3^5)
+fdachpoly <- as.vector(lmpoly$coefficients %*% c(1,3,3^2,3^3,3^4,3^5))
 plot(df$x, df$y)
 pts = predict(lmpoly)
 points(df$x[order(x)], pts[order(x)], type="l", col="red", lwd=2)
@@ -89,7 +93,7 @@ quadvopol <- (y2-fdachpoly)^2
 ```
 
 Sei $\Delta = (y - \hat f(x))^2$.
-Für die lineare Regression erhalten wir $\Delta = 0.28$ und für die polynomiale Regression erhalten wir $\Delta = 0.04.$
+FÃ¼r die lineare Regression erhalten wir $\Delta = 0.28$ und fÃ¼r die polynomiale Regression erhalten wir $\Delta = 0.04.$
 
 ## d)
 
@@ -129,13 +133,13 @@ allpol[,6] <- mean((y3-allpol[,1])^2)
 
 ## e)
 
-Für die lineare Regression erhalten wir:
+FÃ¼r die lineare Regression erhalten wir:
 
 ```{r}
 head(alllin[,4:6],1)
 ```
 
-Für die polynomiale Regression erhalten wir:
+FÃ¼r die polynomiale Regression erhalten wir:
 
 ```{r}
 head(allpol[,4:6],1)
@@ -144,11 +148,11 @@ head(allpol[,4:6],1)
 
 ### i)
 
-Der Bias (betragsmäßig) und der erwartete quadratische Vorhersagefehler sind im linearen Modell deutlich größer als polynomialen Modell. Die polynomiale Regression hat eine höhere Varianz als die lineare Regression.
+Der Bias (betragsmÃ¤ÃŸig) und der erwartete quadratische Vorhersagefehler sind im linearen Modell deutlich grÃ¶ÃŸer als polynomialen Modell. Die polynomiale Regression hat eine hÃ¶here Varianz als die lineare Regression.
 
 ### ii)
 
-Eine höhere Varianz führt zu einem niedrigeren Bias (Bias-Varianz-Trade-Off).
+Eine hÃ¶here Varianz fÃ¼hrt zu einem niedrigeren Bias (Bias-Varianz-Trade-Off).
 Bias und erwartete quadratische Vorhersagefehler gehen Hand in Hand (sind positiv korreliert).
 
 ### iii)
@@ -200,8 +204,8 @@ head(alllin[,4:6],1)
 head(allpol[,4:6],1)
 ```
 
-Wir hätten erwartet, dass die Prognosewerte für die lineare Regression sich nicht großartig ändern. Die für die polynomiale Regression hingegen schon. Wir stellen fest, dass der Bias für die lineare Regression sich nur kaum ändert. Die Lineare Regression hat für ein kleines $n$ einen besseren erwarteten quadratischen Vorhersagewert.
+Wir hÃ¤tten erwartet, dass die Prognosewerte fÃ¼r die lineare Regression sich nicht groÃŸartig Ã¤ndern. Die fÃ¼r die polynomiale Regression hingegen schon. Wir stellen fest, dass der Bias fÃ¼r die lineare Regression sich nur kaum Ã¤ndert. Die Lineare Regression hat fÃ¼r ein kleines $n$ einen besseren erwarteten quadratischen Vorhersagewert.
 
 ## f)
 
-Da die Logarithmusfunktions höchstgradig nicht linear ist, ist die polynomiale Regression ein genaueres Modell und liefert bessere Ergebnisse. Dies wird insbesondere im Bias und im erwarteten quadratischen Vorhersagewert widergespiegelt. Man merkte, dass für kleine $n$ die lineare Regression bessere Werte liefert. Dies liegt insbesondere daran, dass bei $n = 20$ der Abstand von Punkten zu einer Geraden sich nicht großartig ändert (generell hoher Bias dafür niedrige Varianz) aber die polynomiale Regression durch die höhere Varianz bei kleinen Stichproben eher schlechtere Werte liefert, da zwar einige Punkte deutlich besser getroffen werden, dafür wiederum andere Punkte deutlich weiter verfehlt werden. 
+Da die Logarithmusfunktions hÃ¶chstgradig nicht linear ist, ist die polynomiale Regression ein genaueres Modell und liefert bessere Ergebnisse. Dies wird insbesondere im Bias und im erwarteten quadratischen Vorhersagewert widergespiegelt. Man merkte, dass fÃ¼r kleine $n$ die lineare Regression bessere Werte liefert. Dies liegt insbesondere daran, dass bei $n = 20$ der Abstand von Punkten zu einer Geraden sich nicht groÃŸartig Ã¤ndert (generell hoher Bias dafÃ¼r niedrige Varianz) aber die polynomiale Regression durch die hÃ¶here Varianz bei kleinen Stichproben eher schlechtere Werte liefert, da zwar einige Punkte deutlich besser getroffen werden, dafÃ¼r wiederum andere Punkte deutlich weiter verfehlt werden. 
