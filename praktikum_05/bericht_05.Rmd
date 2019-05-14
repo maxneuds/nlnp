@@ -56,44 +56,83 @@ load('DebTrivedi.RData')
 ## a)
 
 ```{r}
-poissreg = glm(
+data = awards
+
+# poisson regression
+plm = glm(
   num_awards ~ prog + math,
-  family="poisson",
-  data=awards
+  data = data,
+  family= poisson
 )
-summary(poissreg)
+summary(plm)
 ```
 
-Die Summary zeigt die Poisson-Regressionskoeffizienten für jede der Variablen sowie die Standardfehler, Z-Scores, p-Werte und 95% Konfidenzintervalle für die Koeffizienten. 
+Die Summary zeigt die Poisson-Regressionskoeffizienten für jede der Variablen sowie die Standardfehler, Z-Scores, p-Werte und $95\%$ Konfidenzintervalle für die Koeffizienten. 
 Der Koeffizient für `math` liegt bei $0.07$. Die Variable `progAcademic` vergleicht zwischen `prog = "Academic"` und `prog = "General"` mit einem Koeffizienten von $1.08$. Die Variable `prog.Vocational` zeigt die erwartete Differenz in der Anzahl zwischen `prog = "Vocational"` und der Referenzgruppe `(prog = "General")` mit einem Koeffizienten von $0.37$.
 
 ## b)
 
 ```{r}
-library('ggplot2')
-ggplot(awards, aes(x = math, y = num_awards, colour = prog)) +
-  geom_point() +
-  geom_smooth(method="glm",se=F, method.args = list(family = "poisson"))+
-  labs(x = "Math Score", y = "Erwartete Anzahl Awards")
+library(ggplot2)
+
+pred = predict.glm(
+  plm,
+  type='response'
+)
+
+gg = ggplot(
+  data = data,
+  mapping = aes(
+    x = math,
+    y = num_awards,
+    color = prog
+  )
+)
+# gg = gg + geom_point()
+gg = gg + geom_smooth(
+  method = "glm",
+  method.args = list(
+    family = "poisson"
+  ),
+  se = FALSE
+)
+gg = gg + labs(
+  x = "Math Score",
+  y = "Erwartete Anzahl Awards"
+)
+gg
 
 ```
 
 ## c)
 
-```{r}
-plot(poissreg)
+```{r fig.height=8}
+par(mfrow=c(2,2))
+plot(plm)
 ```
 
 ## d)
 
 ```{r}
-poissAIC <- AIC(poissreg)
-linAIC <- AIC(lm(awards$num_awards~awards$math + awards$prog))
+lm = lm(
+  num_awards ~ math + prog,
+  data = data
+)
 
-poissAIC
-linAIC
+pAIC <- AIC(plm)
+lAIC <- AIC(lm)
 ```
-Es zeigt sich ein niedrigerer AIC Wert bei der Poisson Regression als bei der linearen Regression. Ein niedriger AIC deutet auf ein besseres Modell hin als ein hoher AIC.
+
+\begin{center}
+\begin{tabular}{ |c|c| }
+  \hline
+  Poisson AIC & Linear AIC\\
+  $`r round(pAIC, 2)`$ & $`r round(lAIC, 2)`$\\ 
+  \hline
+\end{tabular}
+\end{center}
+
+Es zeigt sich ein niedrigerer AIC Wert bei der Poisson Regression als bei der linearen Regression. Ein niedriger AIC deutet auf ein besseres Modell hin als ein hoher AIC. Folglich ist die Poisson Regression als ein besseres Modell zu betrachten.
 
 # Aufgabe 2
 
