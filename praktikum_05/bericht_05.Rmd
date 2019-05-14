@@ -111,6 +111,8 @@ par(mfrow=c(2,2))
 plot(plm)
 ```
 
+In den Plots Residuals vs Fitted und Scale Location l??sst sich die Zuordnung der Werte in die einzelnen Prog Gruppen erkennen. 
+
 ## d)
 
 ```{r}
@@ -148,7 +150,7 @@ Die Summary zeigt die Poisson-Regressionskoeffizienten f??r jede der Variablen s
 ## b)
 
 ```{r}
-mean(predict(poissreg2, data.frame(married='yes',medicaid='no',health='average',numchron=2, hosp=0)))
+mean(predict(poissreg2, data.frame(married='yes',medicaid='no',health='average',numchron=2, hosp=0)),type='response')
 
 Y = poissreg2$coefficients[1]+poissreg2$coefficients[4]*2+poissreg2$coefficients[6]
 
