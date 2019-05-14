@@ -139,6 +139,7 @@ Es zeigt sich ein niedrigerer AIC Wert bei der Poisson Regression als bei der li
 ## a)
 
 ```{r}
+load('DebTrivedi.RData')
 summary(poissreg2 <- glm(ofp~health+numchron+hosp+married+medicaid, data=DebTrivedi))
 ```
 
@@ -149,7 +150,7 @@ Die Summary zeigt die Poisson-Regressionskoeffizienten f??r jede der Variablen s
 ```{r}
 mean(predict(poissreg2, data.frame(married='yes',medicaid='no',health='average',numchron=2, hosp=0)))
 
-Y = poissreg2$coefficients[1]+2*poissreg2$coefficients[3]+poissreg2$coefficients[5]+poissreg2$coefficients[2]
+Y = poissreg2$coefficients[1]+poissreg2$coefficients[4]*2+poissreg2$coefficients[6]
 
 Y
 ```
