@@ -1,0 +1,171 @@
+---
+output: pdf_document
+header-includes: 
+- \usepackage[utf8]{inputenc}
+- \usepackage[T1]{fontenc}
+- \usepackage[ngerman]{babel}
+- \usepackage{amsmath,amssymb,amsthm}
+- \usepackage{dsfont}
+- \usepackage{listings}
+- \usepackage{floatrow}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \fancyhead[C,C]{Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}
+- \fancyhead[L]{}
+- \fancyhead[R]{}
+- \fancyfoot[C,C]{\thepage}
+- \renewcommand{\footrulewidth}{0.4pt}
+---
+
+<style type="text/css">
+body{
+  font-size: 12px;
+}
+h1 {
+  font-size: 18px;
+}
+h1 {
+  font-size: 14px;
+}
+h1 {
+  font-size: 12px;
+}
+</style>
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
+                      collapse=TRUE,     # collapse by default
+                      echo=TRUE,         # echo code by default
+                      comment = "#>",    # change comment character
+                      fig.width = 10,     # set figure width
+                      out.width = "100%", # set width of displayed images
+                      warning=TRUE,      # show R warnings
+                      message=FALSE)     # show R messages
+```
+
+<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
+
+```{r}
+set.seed(42)
+load('awards.RData')
+load('DebTrivedi.RData')
+```
+
+# Aufgabe 1
+
+## a)
+
+```{r}
+poissreg = glm(
+  num_awards ~ prog + math,
+  family="poisson",
+  data=awards
+)
+summary(poissreg)
+```
+
+Die Summary zeigt die Poisson-Regressionskoeffizienten für jede der Variablen sowie die Standardfehler, Z-Scores, p-Werte und 95% Konfidenzintervalle für die Koeffizienten. 
+Der Koeffizient für `math` liegt bei $0.07$. Die Variable `progAcademic` vergleicht zwischen `prog = "Academic"` und `prog = "General"` mit einem Koeffizienten von $1.08$. Die Variable `prog.Vocational` zeigt die erwartete Differenz in der Anzahl zwischen `prog = "Vocational"` und der Referenzgruppe `(prog = "General")` mit einem Koeffizienten von $0.37$.
+
+## b)
+
+```{r}
+library('ggplot2')
+ggplot(awards, aes(x = math, y = num_awards, colour = prog)) +
+  geom_point() +
+  geom_smooth(method="glm",se=F, method.args = list(family = "poisson"))+
+  labs(x = "Math Score", y = "Erwartete Anzahl Awards")
+
+```
+
+## c)
+
+```{r}
+plot(poissreg)
+```
+
+## d)
+
+```{r}
+poissAIC <- AIC(poissreg)
+linAIC <- AIC(lm(awards$num_awards~awards$math + awards$prog))
+
+poissAIC
+linAIC
+```
+Es zeigt sich ein niedrigerer AIC Wert bei der Poisson Regression als bei der linearen Regression. Ein niedriger AIC deutet auf ein besseres Modell hin als ein hoher AIC.
+
+# Aufgabe 2
+
+## a)
+
+```{r}
+summary(poissreg2 <- glm(ofp~health+numchron+hosp+married+medicaid, data=DebTrivedi))
+```
+
+Die Summary zeigt die Poisson-Regressionskoeffizienten f??r jede der Variablen sowie die Standardfehler, Z-Scores, p-Werte und 95% Konfidenzintervalle f??r die Koeffizienten. Es zeigt sich dass "poor health"" einen positiven Einfluss auf die Anzahl Arztbesuche im Verlgeich zu einer "average health" hat, w??hrend "excellent health" einen negativen Einfluss hat. Auch die Variable der chronischen Erkrankungen zeigt einen positiven Koeffizienten zur Anzahl Arztbesuche, genau wie die Notwendigkeit eines Krankenhausaufenthalts und staatliche Unterst??tzung. Nur die positive Variable des verheiratet seins zeigt einen negativen Einfluss auf die Anzahl der Arztbesuche.
+
+## b)
+
+```{r}
+mean(predict(poissreg2, data.frame(married='yes',medicaid='no',health='average',numchron=2, hosp=0)))
+
+Y = poissreg2$coefficients[1]+2*poissreg2$coefficients[3]+poissreg2$coefficients[5]+poissreg2$coefficients[2]
+
+Y
+```
+
+## c)
+
+```{r}
+library('dplyr')
+cBeob <- matrix(NA,nrow=3,ncol=2)
+colnames(cBeob) <- c("hosp 0","hosp 1")
+rownames(cBeob) <- c("poor","average","excellent")
+cGesch <- matrix(NA,nrow=3,ncol=2)
+colnames(cGesch) <- c("hosp 0","hosp 1")
+rownames(cGesch) <- c("poor","average","excellent")
+
+cBeob[2,1] <- sum(filter(DebTrivedi,health=='average'&hosp==0)$ofp)
+cBeob[1,1] <- sum(filter(DebTrivedi,health=='poor'&hosp==0)$ofp)
+cBeob[3,1] <- sum(filter(DebTrivedi,health=='excellent'&hosp==0)$ofp)
+cBeob[2,2] <- sum(filter(DebTrivedi,health=='average'&hosp==1)$ofp)
+cBeob[1,2] <- sum(filter(DebTrivedi,health=='poor'&hosp==1)$ofp)
+cBeob[3,2] <- sum(filter(DebTrivedi,health=='excellent'&hosp==1)$ofp)
+cBeob
+
+glmCGesch <- glm(data = DebTrivedi, ofp~health+hosp, family="poisson")
+cGesch[2,1] <- predict.glm(glmCGesch, data.frame(health='average',hosp=0),type='response')
+nk21 <- dim(filter(DebTrivedi,health=='average'&hosp==0))[1]
+cGesch[1,1] <- predict.glm(glmCGesch, data.frame(health='poor',hosp=0),type='response')
+nk11 <- dim(filter(DebTrivedi,health=='poor'&hosp==0))[1]
+cGesch[3,1] <- predict.glm(glmCGesch, data.frame(health='excellent',hosp=0),type='response')
+nk31 <- dim(filter(DebTrivedi,health=='excellent'&hosp==0))[1]
+cGesch[2,2] <- predict.glm(glmCGesch, data.frame(health='average',hosp=1),type='response')
+nk22 <- dim(filter(DebTrivedi,health=='average'&hosp==1))[1]
+cGesch[1,2] <- predict.glm(glmCGesch, data.frame(health='poor',hosp=1),type='response')
+nk12 <- dim(filter(DebTrivedi,health=='poor'&hosp==1))[1]
+cGesch[3,2] <- predict.glm(glmCGesch, data.frame(health='excellent',hosp=1),type='response')
+nk32 <- dim(filter(DebTrivedi,health=='excellent'&hosp==1))[1]
+cGesch
+
+chisq <- ((cBeob[1,1]-nk11*cGesch[1,1])^2)/(nk11*cGesch[1,1])+
+  ((cBeob[2,1]-nk21*cGesch[2,1])^2)/(nk21*cGesch[2,1])+
+  ((cBeob[3,1]-nk31*cGesch[3,1])^2)/(nk31*cGesch[3,1])+
+  ((cBeob[1,2]-nk12*cGesch[1,2])^2)/(nk12*cGesch[1,2])+
+  ((cBeob[2,2]-nk22*cGesch[2,2])^2)/(nk22*cGesch[2,2])+
+  ((cBeob[3,2]-nk32*cGesch[3,2])^2)/(nk32*cGesch[3,2])
+
+chisq
+```
+
+H0: Erwartete und beobachtete H??ufigkeiten sind gleichverteilt.
+H1: Erwartete und beobachtete H??ufigkeiten sind nicht gleichverteilt.
+
+Der errechnete Wert des Chi-Quadrat Anpassungstests liegt ??ber 11,07 und damit im Ablehnungsbereich. H0 kann also verworfen und H1 angenommen werden.
+
+## d)
+
+```{r}
+plot(poissreg2)
+```
