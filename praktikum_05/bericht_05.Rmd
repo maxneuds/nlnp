@@ -111,7 +111,7 @@ par(mfrow=c(2,2))
 plot(plm)
 ```
 
-In den Plots Residuals vs Fitted und Scale Location l??sst sich die Zuordnung der Werte in die einzelnen Prog Gruppen erkennen. 
+Da Academics eine signifikante statistische Auswirkung hat, findet man an den in den Residuenplots auch Muster eines Offsets wieder. In den Plots Residuals vs Fitted und Scale Location lässt sich die Zuordnung der Werte in die einzelnen Prog Gruppen erkennen. 
 
 ## d)
 
@@ -142,20 +142,31 @@ Es zeigt sich ein niedrigerer AIC Wert bei der Poisson Regression als bei der li
 
 ```{r}
 load('DebTrivedi.RData')
-summary(poissreg2 <- glm(ofp~health+numchron+hosp+married+medicaid, data=DebTrivedi))
+plm = glm(
+  ofp ~ health + numchron + hosp + married + medicaid,
+  data = DebTrivedi
+)
+summary(plm)
 ```
 
-Die Summary zeigt die Poisson-Regressionskoeffizienten f??r jede der Variablen sowie die Standardfehler, Z-Scores, p-Werte und 95% Konfidenzintervalle f??r die Koeffizienten. Es zeigt sich dass "poor health"" einen positiven Einfluss auf die Anzahl Arztbesuche im Verlgeich zu einer "average health" hat, w??hrend "excellent health" einen negativen Einfluss hat. Auch die Variable der chronischen Erkrankungen zeigt einen positiven Koeffizienten zur Anzahl Arztbesuche, genau wie die Notwendigkeit eines Krankenhausaufenthalts und staatliche Unterst??tzung. Nur die positive Variable des verheiratet seins zeigt einen negativen Einfluss auf die Anzahl der Arztbesuche.
+Die Summary zeigt die Poisson-Regressionskoeffizienten für jede der Variablen sowie die Standardfehler, Z-Scores, p-Werte und $95\%$ Konfidenzintervalle für die Koeffizienten. 
+
+''poor health'' und ''excellent health'' sind jeweils neue Faktoren als Verhältnis zu ''average health''.
+
+Es zeigt sich dass ''poor health'' positiv mit Arztbesuchen korreliert ist und ''excellent health'' negativ korreliert.
+Zusätzlich weisen sowohl chronische Erkrankungen als als die Notwendigkeit eines Krankenhausaufenthalts eine positive Korrelation auf.
+
+Die Parameter ''verheiratet'' und ''staatliche Unterstützung'' weisen keine signifikante statsitische Auswirkung auf.
 
 ## b)
 
 ```{r}
-mean(predict(poissreg2, data.frame(married='yes',medicaid='no',health='average',numchron=2, hosp=0)),type='response')
+y = plm$coefficients[1] + 2 * plm$coefficients[4] + plm$coefficients[6]
 
-Y = poissreg2$coefficients[1]+poissreg2$coefficients[4]*2+poissreg2$coefficients[6]
-
-Y
+y
 ```
+
+Man kann $`r round(y, 0)`$ Arztbesuche erwarten.
 
 ## c)
 
@@ -201,13 +212,14 @@ chisq <- ((cBeob[1,1]-nk11*cGesch[1,1])^2)/(nk11*cGesch[1,1])+
 chisq
 ```
 
-H0: Erwartete und beobachtete H??ufigkeiten sind gleichverteilt.
-H1: Erwartete und beobachtete H??ufigkeiten sind nicht gleichverteilt.
+H0: Erwartete und beobachtete Häufigkeiten sind gleichverteilt.
+H1: Erwartete und beobachtete Häufigkeiten sind nicht gleichverteilt.
 
-Der errechnete Wert des Chi-Quadrat Anpassungstests liegt ??ber 11,07 und damit im Ablehnungsbereich. H0 kann also verworfen und H1 angenommen werden.
+Der errechnete Wert des Chi-Quadrat Anpassungstests liegt über $11.07$ und damit im Ablehnungsbereich. H0 kann also verworfen und H1 angenommen werden.
 
 ## d)
 
-```{r}
-plot(poissreg2)
+```{r, fig.height=8}
+par(mfrow=c(2,2))
+plot(plm)
 ```
