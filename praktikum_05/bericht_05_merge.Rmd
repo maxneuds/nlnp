@@ -47,5 +47,56 @@ knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
 
 set.seed(42)
 
-# Aufgabe 1
+# Arbeitsblatt 5
+
+## Aufgabe 1
+
+### a)
+
+```{r}
+# daten vorbereiten
+load('awards.Rdata')
+data = awards
+data$prog_num = as.numeric(as.factor(awards$prog))
+
+# poisson regression
+plm = glm(num_awards~math+prog_num, data = data, family= poisson)
+plm
+```
+
+Wir sehen, dass der Ausbildungstyp einen stärkeren Einfluss auf die Anzahl an Awards hat als die letzte Mathenote.
+
+### b)
+
+```{r}
+library(ggplot2)
+library(tidyr)
+
+newdf = data.frame(math = data$math, prog_num = data$prog_num)
+pred = predict.glm(plm, newdf, type='response')
+plotdf = data.frame(prog = data$prog, math = data$math, exp_awards = pred)
+
+gg = ggplot(
+  data = plotdf,
+  mapping = aes(
+    x = math,
+    y = exp_awards,
+    color = prog
+  )
+) + geom_smooth(
+  method = "glm",
+  se = FALSE
+)
+gg
+
+```
+
+
+
+
+
+
+
+
+
 
