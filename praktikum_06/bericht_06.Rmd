@@ -1,0 +1,108 @@
+---
+output: pdf_document
+header-includes: 
+- \usepackage[utf8]{inputenc}
+- \usepackage[T1]{fontenc}
+- \usepackage[ngerman]{babel}
+- \usepackage{amsmath,amssymb,amsthm}
+- \usepackage{dsfont}
+- \usepackage{listings}
+- \usepackage{floatrow}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- '\fancyhead[C,C]{Gruppe 5: Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}'
+- \fancyhead[L]{}
+- \fancyhead[R]{}
+- \fancyfoot[C,C]{\thepage}
+- \renewcommand{\footrulewidth}{0.4pt}
+---
+
+<style type="text/css">
+body{
+  font-size: 12px;
+}
+h1 {
+  font-size: 18px;
+}
+h1 {
+  font-size: 14px;
+}
+h1 {
+  font-size: 12px;
+}
+</style>
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
+                      collapse=TRUE,     # collapse by default
+                      echo=TRUE,         # echo code by default
+                      comment = "#>",    # change comment character
+                      fig.width = 10,     # set figure width
+                      out.width = "100%", # set width of displayed images
+                      warning=TRUE,      # show R warnings
+                      message=FALSE)     # show R messages
+```
+
+<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
+
+
+# Aufgabe 1
+### a)
+```{r}
+load('awards.RData')
+load('DebTrivedi.RData')
+
+plm = glm(
+  num_awards ~ prog + math,
+  data = awards,
+  family= poisson
+)
+
+lambda_voc <- predict.glm(plm, data.frame(prog = "Vocational", math = 60), type="response")
+lambda_acd <- predict.glm(plm, data.frame(prog = "Academic", math = 60), type="response")
+lambda_gen <- predict.glm(plm, data.frame(prog = "General", math = 60), type="response")
+
+1- sum(dpois(0:2, lambda_gen))
+1- sum(dpois(0:2, lambda_voc))
+1- sum(dpois(0:2, lambda_acd))
+```
+
+### b)
+```{r}
+library("lmtest")
+
+plm_without = glm(
+  num_awards ~ math,
+  data = awards,
+  family= poisson
+)
+
+lmtest::lrtest(plm, plm_without)
+AIC(plm_without, plm)
+``` 
+
+Um zu überprüfen, ob der Ausbildungstyp einen signifikanten Einfluss auf die Anzahl an Awards hat, wurden zwei Poissonregressionen gefittet (1. num_awards ~ prog + math; 2. num_awards ~ math) und mittels AIC und Likelihood-Ratio-Test miteinander verglichen. 
+
+Beide Vergleichsmethoden kommen zum Ergebnis, dass der Ausbildungsyp ("prog") einen Einfluss auf die Zielgröße ("num_awards") hat. 
+
+### c)
+```{r}
+anova <- aov(num_awards ~ prog+math, data=awards)
+summary(anova)
+```
+Um den Einfluss der Variablen auf die Zielgröße zu überprüfen, wurde eine Varianzanalyse (Anova) durchgeführt. Laut dieser haben sowohl math als auch prog einen signifikaten Einfluss auf num_awards.
+
+### d)
+```{r}
+poly <- lm(num_awards ~ math + I(math^2) + I(math^3), data=awards)
+
+plot(num_awards~math, data=awards)
+lines(sort(awards$math), fitted(poly)[order(awards$math)], col='red', lw=2)
+abline(plm_without, col='blue', lw=2)
+
+AIC(poly, plm_without)
+```
+
+Laut AIC ist das polynomiale Modell 3. Grades schlechter als das lineare Modell (beide mit math als einziger Kovariate). Plottet man die beiden gefitteten Kurven über die tatsächlichen Werte, wird klar, wieso das lineare Modell besser performt: 
+
+Das lineare Modell prognostiziert für niedrigere Math-Scores (< ~60) num_awards=0. Das polynomiale Modell hingegen prognostiziert für niedrige Math-Scores Werte für num_awards > 0. Damit ist das lineare Modell in Summe das genauere. 
