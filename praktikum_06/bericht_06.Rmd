@@ -94,15 +94,121 @@ Um den Einfluss der Variablen auf die Zielgröße zu überprüfen, wurde eine Varian
 
 ### d)
 ```{r}
-poly <- lm(num_awards ~ math + I(math^2) + I(math^3), data=awards)
+poly <- glm(num_awards ~ math + I(math^2) + I(math^3), data=awards, family='poisson')
 
-plot(num_awards~math, data=awards)
+plot(num_awards~math, data=awards, main="num_awards~math: Polynomiale (rot) vs 
+     Lineare Regression (blau)")
 lines(sort(awards$math), fitted(poly)[order(awards$math)], col='red', lw=2)
 abline(plm_without, col='blue', lw=2)
 
 AIC(poly, plm_without)
+anova(poly, plm_without, test='Chisq')
 ```
 
-Laut AIC ist das polynomiale Modell 3. Grades schlechter als das lineare Modell (beide mit math als einziger Kovariate). Plottet man die beiden gefitteten Kurven über die tatsächlichen Werte, wird klar, wieso das lineare Modell besser performt: 
+Laut AIC ist das polynomiale Modell 3. Grades nicht signifikant besser als das lineare Modell (beide mit math als einziger Kovariate). 
 
-Das lineare Modell prognostiziert für niedrigere Math-Scores (< ~60) num_awards=0. Das polynomiale Modell hingegen prognostiziert für niedrige Math-Scores Werte für num_awards > 0. Damit ist das lineare Modell in Summe das genauere. 
+# Aufgabe 2
+### a)
+```{r}
+library(tidyr)
+poisreg <- glm(ofp~health+numchron+hosp+married+medicaid, data=DebTrivedi, family = 'poisson')
+
+dev_model <- deviance(poisreg)
+
+coeff <- poisreg$coefficients
+
+data_a  <- DebTrivedi
+data_a$ofp[data_a$ofp == 0] <- 0.000001
+
+data_a <- spread(data_a, health, health)
+data_a$poor <- as.numeric(data_a$poor)
+data_a$poor[is.na(data_a$poor)] <- 0
+data_a$average <- as.numeric(data_a$average)
+data_a$average[is.na(data_a$average)] <- 0
+data_a$average[data_a$average == 2] <- 1
+data_a$excellent <- as.numeric(data_a$excellent)
+data_a$excellent[is.na(data_a$excellent)] <- 0
+data_a$excellent[data_a$excellent == 3] <- 1
+data_a <- spread(data_a, medicaid, medicaid, sep='')
+data_a$medicaidyes <- as.numeric(data_a$medicaidyes)
+data_a$medicaidno <- as.numeric(data_a$medicaidno)
+data_a$medicaidyes[is.na(data_a$medicaidyes)] <- 0
+data_a$medicaidyes[data_a$medicaidyes == 2] <- 1
+data_a$medicaidno[is.na(data_a$medicaidno)] <- 0
+data_a <- spread(data_a, married, married, sep='')
+data_a$marriedyes <- as.numeric(data_a$marriedyes)
+data_a$marriedno <- as.numeric(data_a$marriedno)
+data_a$marriedyes[is.na(data_a$marriedyes)] <- 0
+data_a$marriedyes[data_a$marriedyes == 2] <- 1
+data_a$marriedno[is.na(data_a$marriedno)] <- 0
+
+
+ll_m <-c()
+
+for(i in 1:nrow(data_a)){
+ll_m[i]<--exp( coeff[1] + 
+                 coeff[2]*data_a$poor[i] + 
+                 coeff[3]*data_a$excellent[i] + 
+                 coeff[4]*data_a$numchron[i] + 
+                 coeff[5]*data_a$hosp[i] + 
+                 coeff[6]*data_a$marriedyes[i] + 
+                 coeff[7]*data_a$medicaidyes[i]) + 
+  data_a$ofp[i]*(coeff[1] + coeff[2]*data_a$poor[i] + 
+                   coeff[3]*data_a$excellent[i] + 
+                   coeff[4]*data_a$numchron[i] + 
+                   coeff[5]*data_a$hosp[i] + 
+                   coeff[6]*data_a$marriedyes[i] + 
+                   coeff[7]*data_a$medicaidyes[i]) - 
+  log(factorial(data_a$ofp[i]))
+}
+
+ll_reg <- sum(ll_m) 
+
+ll_opt <- sum(-data_a$ofp + data_a$ofp * log(data_a$ofp) - log(factorial(data_a$ofp)))
+
+dev_manual <- -2*(ll_reg-ll_opt) 
+
+dev_model
+dev_manual
+```
+### b)
+```{r}
+summary(poisreg)
+pchisq(poisreg$deviance, df=poisreg$df.residual)
+nrow(DebTrivedi)
+```
+
+Um die Abweichung als Gütemetrik zu nutzen, müssen wir unter der Annahme, dass unser Modell korrekt ist, herausfinden, wie viel Variation wir bei den beobachteten Ergebnissen um ihre vorhergesagten Mittel herum erwarten würden. 
+
+Da die Abweichung als Likelihood-Ratio-Test zum Vergleich des aktuellen Modells mit dem gesättigten Modell abgeleitet werden kann, wird vermutet, dass (vorausgesetzt, das Modell ist korrekt spezifiziert) die Abweichung einer Chi-Quadrat-Verteilung folgt, deren Freiheitsgrade der Differenz in der Anzahl der Parameter entsprechen. Das gesättigte Modell kann als ein Modell betrachtet werden, das für jede Beobachtung einen eigenen Parameter verwendet und somit n Parameter hat. Wenn unser Modell p-Parameter hat, bedeutet dies, dass die Abweichung mit einer Chi-Quadrat-Verteilung auf n-p-Parameter verglichen wird.
+
+Die Abweichung wird hier von der glm-Funktion als "residual deviance" bezeichnet, hier 24180. Es gibt 4406 Beobachtungen, und unser Modell hat sechs Parameter, so dass die Freiheitsgrade 4399 sind, angegeben durch df.residual. Um den p-Wert für die Varianzgüte des Fit-Tests zu berechnen, berechnen wir einfach die Wahrscheinlichkeit rechts neben dem Varianzwert für die Chi-Quadrat-Verteilung auf 4399 Freiheitsgrade.
+
+Die Nullhypothese ist, dass unser Modell korrekt spezifiziert ist. Ein p-Wert von 1 spricht für ein gut gefittetes Modell.
+
+### c)
+```{r}
+poisreg2 <- glm(ofp~health+numchron+hosp+married+medicaid, data=DebTrivedi, family = 'quasipoisson') 
+summary(poisreg2)
+```
+
+Bei der Poissonregression treffen wir eine starke Modellannahme: 
+
+Da bei der Poissonverteilung $\lambda$ gleich der Erwartungswert, ALS AUCH der Varianz ist, nehmen wir dies auch für die Verteilung in unserem Modell an. Dies ist häufig nicht der Fall.
+
+Überdispersion ist ein Problem, wenn die bedingte Varianz größer ist als der bedingte Mittelwert. Um den Überdispersionparameter zu schätzen, fitten wir ein Quasi-Poisson-Modell auf unsere Daten.  
+
+Laut dem neuen Modell ist der geschätzte Überdispersionsparameter bei ~ 7. Das heißt, die bedingte Varianz ist 7-mal größer als der bedingte Mittelwert.
+
+### d)
+```{r}
+summary(poisreg)
+summary(poisreg2)
+```
+
+Es ändern sich nur die p-Werte der Koeffizienten. Dies rührt von der Veränderung der Verteilungsannahme (von Poisson zu Quasi-Poisson).
+
+### e)
+```{r}
+
+```
