@@ -1,2 +1,19 @@
+# Mac
 .DS_Store
+
+# R
 .Rhistory
+.Rapp.history
+.RData
+*-Ex.R
+/*.tar.gz
+/*.Rcheck/
+.Rproj.user/
+vignettes/*.html
+vignettes/*.pdf
+.httr-oauth
+/*_cache/
+/cache/
+*.utf8.md
+*.knit.md
+rsconnect/
