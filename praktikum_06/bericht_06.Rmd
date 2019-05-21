@@ -49,6 +49,7 @@ knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
 # Aufgabe 1
 ### a)
 ```{r}
+set.seed("42")
 load('awards.RData')
 load('DebTrivedi.RData')
 
@@ -81,16 +82,16 @@ lmtest::lrtest(plm, plm_without)
 AIC(plm_without, plm)
 ``` 
 
-Um zu überprüfen, ob der Ausbildungstyp einen signifikanten Einfluss auf die Anzahl an Awards hat, wurden zwei Poissonregressionen gefittet (1. num_awards ~ prog + math; 2. num_awards ~ math) und mittels AIC und Likelihood-Ratio-Test miteinander verglichen. 
+Um zu Ã¼berprÃ¼fen, ob der Ausbildungstyp einen signifikanten Einfluss auf die Anzahl an Awards hat, wurden zwei Poissonregressionen gefittet (1. num_awards ~ prog + math; 2. num_awards ~ math) und mittels AIC und Likelihood-Ratio-Test miteinander verglichen. 
 
-Beide Vergleichsmethoden kommen zum Ergebnis, dass der Ausbildungsyp ("prog") einen Einfluss auf die Zielgröße ("num_awards") hat. 
+Beide Vergleichsmethoden kommen zum Ergebnis, dass der Ausbildungsyp ("prog") einen Einfluss auf die ZielgrÃ¶ÃŸe ("num_awards") hat. 
 
 ### c)
 ```{r}
 anova <- aov(num_awards ~ prog+math, data=awards)
 summary(anova)
 ```
-Um den Einfluss der Variablen auf die Zielgröße zu überprüfen, wurde eine Varianzanalyse (Anova) durchgeführt. Laut dieser haben sowohl math als auch prog einen signifikaten Einfluss auf num_awards.
+Um den Einfluss der Variablen auf die ZielgrÃ¶ÃŸe zu Ã¼berprÃ¼fen, wurde eine Varianzanalyse (Anova) durchgefÃ¼hrt. Laut dieser haben sowohl math als auch prog einen signifikaten Einfluss auf num_awards.
 
 ### d)
 ```{r}
@@ -178,13 +179,13 @@ pchisq(poisreg$deviance, df=poisreg$df.residual)
 nrow(DebTrivedi)
 ```
 
-Um die Abweichung als Gütemetrik zu nutzen, müssen wir unter der Annahme, dass unser Modell korrekt ist, herausfinden, wie viel Variation wir bei den beobachteten Ergebnissen um ihre vorhergesagten Mittel herum erwarten würden. 
+Um die Abweichung als GÃ¼temetrik zu nutzen, mÃ¼ssen wir unter der Annahme, dass unser Modell korrekt ist, herausfinden, wie viel Variation wir bei den beobachteten Ergebnissen um ihre vorhergesagten Mittel herum erwarten wÃ¼rden. 
 
-Da die Abweichung als Likelihood-Ratio-Test zum Vergleich des aktuellen Modells mit dem gesättigten Modell abgeleitet werden kann, wird vermutet, dass (vorausgesetzt, das Modell ist korrekt spezifiziert) die Abweichung einer Chi-Quadrat-Verteilung folgt, deren Freiheitsgrade der Differenz in der Anzahl der Parameter entsprechen. Das gesättigte Modell kann als ein Modell betrachtet werden, das für jede Beobachtung einen eigenen Parameter verwendet und somit n Parameter hat. Wenn unser Modell p-Parameter hat, bedeutet dies, dass die Abweichung mit einer Chi-Quadrat-Verteilung auf n-p-Parameter verglichen wird.
+Da die Abweichung als Likelihood-Ratio-Test zum Vergleich des aktuellen Modells mit dem gesÃ¤ttigten Modell abgeleitet werden kann, wird vermutet, dass (vorausgesetzt, das Modell ist korrekt spezifiziert) die Abweichung einer Chi-Quadrat-Verteilung folgt, deren Freiheitsgrade der Differenz in der Anzahl der Parameter entsprechen. Das gesÃ¤ttigte Modell kann als ein Modell betrachtet werden, das fÃ¼r jede Beobachtung einen eigenen Parameter verwendet und somit n Parameter hat. Wenn unser Modell p-Parameter hat, bedeutet dies, dass die Abweichung mit einer Chi-Quadrat-Verteilung auf n-p-Parameter verglichen wird.
 
-Die Abweichung wird hier von der glm-Funktion als "residual deviance" bezeichnet, hier 24180. Es gibt 4406 Beobachtungen, und unser Modell hat sechs Parameter, so dass die Freiheitsgrade 4399 sind, angegeben durch df.residual. Um den p-Wert für die Varianzgüte des Fit-Tests zu berechnen, berechnen wir einfach die Wahrscheinlichkeit rechts neben dem Varianzwert für die Chi-Quadrat-Verteilung auf 4399 Freiheitsgrade.
+Die Abweichung wird hier von der glm-Funktion als "residual deviance" bezeichnet, hier 24179. Es gibt 4406 Beobachtungen, und unser Modell hat sechs Parameter, so dass die Freiheitsgrade 4399 sind, angegeben durch df.residual. Um den p-Wert fÃ¼r die VarianzgÃ¼te des Fit-Tests zu berechnen, berechnen wir einfach die Wahrscheinlichkeit rechts neben dem Varianzwert fÃ¼r die Chi-Quadrat-Verteilung auf 4399 Freiheitsgrade.
 
-Die Nullhypothese ist, dass unser Modell korrekt spezifiziert ist. Ein p-Wert von 1 spricht für ein gut gefittetes Modell.
+Die Nullhypothese ist, dass unser Modell korrekt spezifiziert ist. Ein p-Wert von 1 spricht fÃ¼r ein gut gefittetes Modell.
 
 ### c)
 ```{r}
@@ -194,11 +195,11 @@ summary(poisreg2)
 
 Bei der Poissonregression treffen wir eine starke Modellannahme: 
 
-Da bei der Poissonverteilung $\lambda$ gleich der Erwartungswert, ALS AUCH der Varianz ist, nehmen wir dies auch für die Verteilung in unserem Modell an. Dies ist häufig nicht der Fall.
+Da bei der Poissonverteilung $\lambda$ gleich der Erwartungswert, ALS AUCH der Varianz ist, nehmen wir dies auch fÃ¼r die Verteilung in unserem Modell an. Dies ist hÃ¤ufig nicht der Fall.
 
-Überdispersion ist ein Problem, wenn die bedingte Varianz größer ist als der bedingte Mittelwert. Um den Überdispersionparameter zu schätzen, fitten wir ein Quasi-Poisson-Modell auf unsere Daten.  
+Ãœberdispersion ist ein Problem, wenn die bedingte Varianz grÃ¶ÃŸer ist als der bedingte Mittelwert. Um den Ãœberdispersionparameter zu schÃ¤tzen, fitten wir ein Quasi-Poisson-Modell auf unsere Daten.  
 
-Laut dem neuen Modell ist der geschätzte Überdispersionsparameter bei ~ 7. Das heißt, die bedingte Varianz ist 7-mal größer als der bedingte Mittelwert.
+Laut dem neuen Modell ist der geschÃ¤tzte Ãœberdispersionsparameter bei ~ 7. Das heiÃŸt, die bedingte Varianz ist 7-mal grÃ¶ÃŸer als der bedingte Mittelwert.
 
 ### d)
 ```{r}
@@ -206,9 +207,54 @@ summary(poisreg)
 summary(poisreg2)
 ```
 
-Es ändern sich nur die p-Werte der Koeffizienten. Dies rührt von der Veränderung der Verteilungsannahme (von Poisson zu Quasi-Poisson).
+Es Ã¤ndern sich nur die p-Werte der Koeffizienten. Dies rÃ¼hrt von der VerÃ¤nderung der Verteilungsannahme (von Poisson zu Quasi-Poisson).
 
 ### e)
 ```{r}
+library('dplyr')
+cBeob <- matrix(NA,nrow=3,ncol=2)
+colnames(cBeob) <- c("hosp 0","hosp 1")
+rownames(cBeob) <- c("poor","average","excellent")
+cGesch <- matrix(NA,nrow=3,ncol=2)
+colnames(cGesch) <- c("hosp 0","hosp 1")
+rownames(cGesch) <- c("poor","average","excellent")
 
+cBeob[2,1] <- sum(filter(DebTrivedi,health=='average'&hosp==0)$ofp)
+cBeob[1,1] <- sum(filter(DebTrivedi,health=='poor'&hosp==0)$ofp)
+cBeob[3,1] <- sum(filter(DebTrivedi,health=='excellent'&hosp==0)$ofp)
+cBeob[2,2] <- sum(filter(DebTrivedi,health=='average'&hosp==1)$ofp)
+cBeob[1,2] <- sum(filter(DebTrivedi,health=='poor'&hosp==1)$ofp)
+cBeob[3,2] <- sum(filter(DebTrivedi,health=='excellent'&hosp==1)$ofp)
+cBeob
+
+glmCGesch <- glm(data = DebTrivedi, ofp~health+hosp, family="quasipoisson")
+cGesch[2,1] <- predict.glm(glmCGesch, data.frame(health='average',hosp=0),type='response')
+nk21 <- dim(filter(DebTrivedi,health=='average'&hosp==0))[1]
+cGesch[1,1] <- predict.glm(glmCGesch, data.frame(health='poor',hosp=0),type='response')
+nk11 <- dim(filter(DebTrivedi,health=='poor'&hosp==0))[1]
+cGesch[3,1] <- predict.glm(glmCGesch, data.frame(health='excellent',hosp=0),type='response')
+nk31 <- dim(filter(DebTrivedi,health=='excellent'&hosp==0))[1]
+cGesch[2,2] <- predict.glm(glmCGesch, data.frame(health='average',hosp=1),type='response')
+nk22 <- dim(filter(DebTrivedi,health=='average'&hosp==1))[1]
+cGesch[1,2] <- predict.glm(glmCGesch, data.frame(health='poor',hosp=1),type='response')
+nk12 <- dim(filter(DebTrivedi,health=='poor'&hosp==1))[1]
+cGesch[3,2] <- predict.glm(glmCGesch, data.frame(health='excellent',hosp=1),type='response')
+nk32 <- dim(filter(DebTrivedi,health=='excellent'&hosp==1))[1]
+cGesch
+
+chisq <- ((cBeob[1,1]-nk11*cGesch[1,1])^2)/(nk11*cGesch[1,1])+
+  ((cBeob[2,1]-nk21*cGesch[2,1])^2)/(nk21*cGesch[2,1])+
+  ((cBeob[3,1]-nk31*cGesch[3,1])^2)/(nk31*cGesch[3,1])+
+  ((cBeob[1,2]-nk12*cGesch[1,2])^2)/(nk12*cGesch[1,2])+
+  ((cBeob[2,2]-nk22*cGesch[2,2])^2)/(nk22*cGesch[2,2])+
+  ((cBeob[3,2]-nk32*cGesch[3,2])^2)/(nk32*cGesch[3,2])
+
+chisq
 ```
+
+H0: Erwartete und beobachtete HÃ¤ufigkeiten sind gleichverteilt.
+H1: Erwartete und beobachtete HÃ¤ufigkeiten sind nicht gleichverteilt.
+
+Der errechnete Wert des Chi-Quadrat Anpassungstests liegt Ã¼ber $11.07$ und damit im Ablehnungsbereich. H0 kann also verworfen und H1 angenommen werden.
+
+Da die Koeffizienten beider Modelle identisch sind, liefern die Predictions auch identische Werte. Der Anpassungstest weist folglich nicht auf eine verbesserte Anpassung des erweiterten Modells hin.

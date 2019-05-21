@@ -1,0 +1,134 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+header-includes: 
+    - \usepackage{amsthm}
+    - \usepackage{xcolor}
+documentclass: article
+<!---output: beamer_presentation--->
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
+                      collapse=TRUE,     # collapse by default
+                      echo=TRUE,         # echo code by default
+                      comment = "#>",    # change comment character
+                      fig.width = 10,     # set figure width
+                      out.width = "100%", # set width of displayed images
+                      warning=TRUE,      # show R warnings
+                      message=FALSE)     # show R messages
+
+packageTest<- function(x)  {
+    if (!require(x,character.only = TRUE))  {
+      install.packages(x,dep=TRUE)
+      if(!require(x,character.only = TRUE)) stop("Package not found")
+    }
+}
+
+options(warn=-1)
+```
+
+
+<!--- Solution Region --->
+<style>
+#solution {
+  background-color: #8FBC8F;
+  border-style: solid;
+  border-color: blue;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  padding: 5px;
+}
+</style>
+
+
+
+<!---**Sommersemester 2019 |Studiengang Data Science | Hochschule Darmstadt **--->
+
+
+
+
+\theoremstyle{break}
+\newtheorem{auf}{Aufgabe}
+
+\newcommand{\R}{{\sffamily R} }
+
+\begin{centering}
+%\vspace{-2 cm}
+\Huge
+{\bf Uebung 2}\\
+\Large
+Nichtlineare und nichtparametrische Modelle\\
+\normalsize
+Sommersemester 2019\\
+April 16, 2019\\
+A. Jahn-Eiermacher (FBMN, h\_da)\\
+\end{centering}
+
+
+\hrulefill
+
+**Name: Robin Baudisch, Merlin Kopfmann, Maximilian Neudert**
+
+\hrulefill
+
+## Aufgabe 1
+### a)
+```{r}
+packageTest('ggplot2')
+load('applicants.RData')
+
+par(mfrow=c(1,2))
+boxplot(classic, ylab='Score', xlab='classic')
+boxplot(scient, ylab='Score', xlab='scient')
+```
+
+Hier eignet sich ein nichtparametrischer Test aus mehrerer Hinsicht:
+
+1. Da unsere Stichprobengröße mit n=10 klein ist, gibt es eine geringere Trennschärfe und eine a priori Annahme der Verteilung unserer Stichproben stellt sich schwierig dar.
+
+2. Unsere Stichproben sind ordinalskaliert.
+
+### c)
+```{r}
+wilcox.test(scient,classic,alternative = 'greater', paired = FALSE)
+```
+Mit einem $\alpha$ = 5% wird im obigen Test die Nullhyothese ($\theta$ < 0) abgelehnt (p-value = 0.009272 < 0.05). Dies bedeutet, die Scores der Naturwissenschaftsstudenten sind signifikant höher als die Scores der Nicht-Naturwissenschaftsstudenten.
+
+## Aufgabe 2
+### a)
+
+Die Fragestellung ist verbunden, da unsere Daten aus der gleichen Stichprobe kommen und symmetrisch sind.  
+
+### b)
+```{r}
+load("HRR.RData")
+par(mfrow=c(1,2))
+boxplot(HRR_no, ylab='Frequenz', xlab='No')
+boxplot(HRR_yes, ylab='Frequenz', xlab='Yes')
+
+hist(HRR_no)
+hist(HRR_yes)
+```
+Hier eignet sich, aus den gleichen Gründen wie in Aufgabe 1, ein nichtparametrischer Test zur Überprüfung der Hypothesen.  
+
+### d)
+```{r}
+wilcox.test(HRR_yes, HRR_no, paired=TRUE, alternative = 'less')
+```
+Mit einem $\alpha$ = 5% wird im obigen Test die Nullhyothese ($\theta$ < 0) nicht widerlegt (p-value = 0.4167 > 0.05). Dies bedeutet, der Median von HRR_yes ist statistisch nicht kleiner als der Median von HRR_no.
+
+## Aufgabe 3
+### a)
+$\binom{2+3}{2}$ = 10
+
+### c)
+```{r}
+packageTest('perm')
+Braeburn = c(55, 104)
+Golden_Delicious = c(89, 108, 98)
+
+permTS(Braeburn, Golden_Delicious)
+```
+Mit einem $\alpha$ = 5% wird im obigen Test die Nullhyothese \($$Z \sim Z_{\pi}$$\) nicht widerlegt (p-value = 0.6 > 0.05). Dies bedeutet, dass es keine tendenziell besser bewertete Apfelsorte gibt.
