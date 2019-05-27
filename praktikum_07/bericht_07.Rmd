@@ -59,6 +59,7 @@ usepackage = function(p)
 usepackage('ggplot2')
 usepackage('MASS')
 usepackage('tidyr')
+usepackage('boot')
 ```
 
 # Praktikum 7
@@ -298,9 +299,9 @@ Das Polynom ist von Grad $8$ und besitzt somit $9$ freie Parameter.
 p2 = glm(accel~poly(times, 2, raw=TRUE), data=df)
 p3 = glm(accel~poly(times, 3, raw=TRUE), data=df)
 p8 = glm(accel~poly(times, 8, raw=TRUE), data=df)
-aic2 = AIC(p2)
-aic3 = AIC(p3)
-aic8 = AIC(p8)
+aic2 = round(AIC(p2), 0)
+aic3 = round(AIC(p3), 0)
+aic8 = round(AIC(p8), 0)
 ```
 
 Wir erhalten als AIC Werte für die Modelle:
