@@ -16,6 +16,8 @@ header-includes:
 - \fancyhead[R]{}
 - \fancyfoot[C,C]{\thepage}
 - \renewcommand{\footrulewidth}{0.4pt}
+- \newcommand{\argmin}{\operatorname{arg}\min}
+- \newcommand{\R}{\mathds{R}}
 ---
 
 <style type="text/css">
@@ -46,9 +48,17 @@ knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
 
 <!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
 
-```{r}
+```{r, echo=FALSE}
 set.seed(42)
-library(ggplot2)
+usepackage = function(p) 
+{
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE)
+  require(p, character.only = TRUE)
+}
+usepackage('ggplot2')
+usepackage('MASS')
+usepackage('tidyr')
 ```
 
 # Praktikum 7
@@ -123,6 +133,111 @@ Somit erhalten wir:
 \item $\hat g_2$ hat im Allgemeinen einen kleineren Trainingsfehler, da stärkere Interpolation.
 \item $\hat g_1$ hat im Allgemeinen einen kleineren Testfehler, da schwächere Interpolation.
 \end{enumerate}
+
+\cleardoublepage
+
+## Aufgabe 3
+
+```{r}
+df = mcycle
+```
+
+### a)
+
+Zuerst schauen wir uns den Plot mit linearer Regression an.
+
+```{r}
+gg = ggplot(
+  data = df,
+  mapping = aes(
+    x = times,
+    y = accel
+  )
+)
+gg = gg + geom_point()
+gg + geom_smooth(
+  method = 'lm',
+  formula = 'y ~ x'
+)
+```
+
+Dies sieht nicht so passend aus. Nun betrachten wir die diagnostischen Plots:
+
+```{r, fig.height=9}
+lm = lm(accel~times, df)
+par(mfrow=c(2,2))
+plot(lm)
+```
+
+Der Scatterplot lässt vermuten, dass die Datenpunkte nicht linear verteilt sind (Modellverletzung).
+Dies erkennt man auch in den diagnostischen Plots, da die Residuen normalverteilt sein sollten, was sie aber nicht sind (Modellverletzung).
+
+### b)
+
+Sei $P_n$ die Menge aller Polynome vom Grad $n$, also:
+
+$$
+P_n = \lbrace a_0 + a_1 x + a_2 x^2 + \dots + a_n x^n \rbrace,\quad a_i \in \R
+$$
+
+Seien $\hat g_2$ und $\hat g_3$ die Regressionsfunktionen für die polynomiale Regression von Grad $2$ und Grad $3$.
+Dann sind unsere Modelle definiert durch:
+
+\begin{align}
+& \hat g_2
+= \argmin_{g \in P_2} \sum_{i = 1}^n (y_i - g(x_i))^2\\
+& \hat g_3
+= \argmin_{g \in P_3} \sum_{i = 1}^n (y_i - g(x_i))^2
+\end{align}
+
+Da ein Polynom von Grad $n$ genau $n+1$ freie Parameter hat, hat $g_2$ 3 freie Parameter und $g_3$ 4 freie Parameter.
+
+```{r}
+# models
+p2 = lm(accel~poly(times, 2, raw=TRUE), data=df)
+p3 = lm(accel~poly(times, 3, raw=TRUE), data=df)
+# manual function for prediction
+g2 = function(x) {
+  g = p2$coefficients[1]
+  g = g + p2$coefficients[2] * x
+  g = g + p2$coefficients[3] * x^2
+  return(g)
+}
+g3 = function(x) {
+  g = p3$coefficients[1]
+  g = g + p3$coefficients[2] * x
+  g = g + p3$coefficients[3] * x^2
+  g = g + p3$coefficients[4] * x^3
+  return(g)
+}
+# times to check
+t = c(10, 20, 30, 40)
+# manual prediction
+val2 = g2(t)
+val3 = g3(t)
+# prediction using predict
+df.t = data.frame(times = t)
+pred2 = predict(p2, df.t)
+pred3 = predict(p3, df.t)
+# Check: Calculate the difference
+d2 = val2 - as.vector(pred2)
+d3 = val3 - as.vector(pred3)
+# round for visual
+val2 = round(val2, 2)
+val3 = round(val3, 2)
+```
+
+Wir erhalten als Ergebnis
+
+\begin{tabular}{l | c c c c}
+$t$ & $10$ & $20$ & $30$ & $40$ \\
+\hline
+$g_2(t)$ &  $`r val2[1]`$ &  $`r val2[2]`$ &  $`r val2[3]`$ &  $`r val2[4]`$\\
+$g_3(t)$ &  $`r val3[1]`$ &  $`r val3[2]`$ &  $`r val3[3]`$ &  $`r val3[4]`$
+\end{tabular}
+
+Zur Überprüfung haben wir die Differenzen berechnet und erhalten
+
 
 
 
