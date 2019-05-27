@@ -238,6 +238,120 @@ $g_3(t)$ &  $`r val3[1]`$ &  $`r val3[2]`$ &  $`r val3[3]`$ &  $`r val3[4]`$
 
 Zur Überprüfung haben wir die Differenzen berechnet und erhalten
 
+\begin{tabular}{l | c c c c}
+$t$ & $10$ & $20$ & $30$ & $40$\\
+\hline
+$g_2(t) - \text{predict}$ &  $`r d2[1]`$ &  $`r d2[2]`$ &  $`r d2[3]`$ &  $`r d2[4]`$\\
+$g_3(t) - \text{predict}$ &  $`r d3[1]`$ &  $`r d3[2]`$ &  $`r d3[3]`$ &  $`r d3[4]`$
+\end{tabular}
 
+Um zu überprüfen, ob ein lineares Modell ausreichen würde, führen wir einen Anpassungstest auf den Residuen durch. Als Testmethode nehmen wir Shapiro-Wilk.
 
+```{r}
+lm = lm(accel~times, data=df)
+sw = shapiro.test(lm$residuals)
+pval = round(sw$p.value, 5)
+sw
+```
+
+Wir erhalten einen p-Wert von $`r pval`$ dieser ist deutlich kleiner als `0.05` somit können wir annehmen, dass die Residuen der linearen Regression nicht normalverteilt sind und folgich ist ein lineares Modell nicht ausreichend.
+
+### c)
+
+```{r}
+deltas = matrix(ncol = 3, nrow = 10)
+for (p in seq(10)) {
+  glm =  glm(accel~poly(times, p, raw=TRUE), data=df)
+  cv = cv.glm(data = df, glm = glm)
+  deltas[p,] = c(p, cv$delta)
+  ddf = data.frame(round(deltas, 0))
+  names(ddf) = c("degree", "delta_raw", "delta_adj")
+}
+ddf
+```
+
+Wie wir sehen erhalten wir als bestes Modell eine polynomiale Regression von Grad $8$.
+Zur veranschaulichung plotten wir dieses:
+
+```{r}
+gg = ggplot(
+  data = df,
+  mapping = aes(
+    x = times,
+    y = accel
+  )
+)
+gg = gg + geom_point()
+gg + geom_smooth(
+  method = 'glm',
+  formula = y~poly(x, 8, raw=TRUE)
+)
+```
+
+### d)
+
+Das Polynom ist von Grad $8$ und besitzt somit $9$ freie Parameter.
+
+### e)
+
+```{r}
+p2 = glm(accel~poly(times, 2, raw=TRUE), data=df)
+p3 = glm(accel~poly(times, 3, raw=TRUE), data=df)
+p8 = glm(accel~poly(times, 8, raw=TRUE), data=df)
+aic2 = AIC(p2)
+aic3 = AIC(p3)
+aic8 = AIC(p8)
+```
+
+Wir erhalten als AIC Werte für die Modelle:
+
+\begin{tabular}{c | c}
+p & AIC\\
+\hline
+$2$ &  $`r aic2`$\\
+$3$ &  $`r aic3`$\\
+$8$ &  $`r aic8`$
+\end{tabular}
+
+Auch hier würden wir anhand des AIC das Modell mit Grad $8$ also mit $9$ Parametern wählen.
+
+### f)
+
+```{r}
+gg = ggplot(
+  data = df,
+  mapping = aes(
+    x = times,
+    y = accel
+  )
+)
+gg = gg + geom_point()
+gg = gg + geom_smooth(
+  method = 'glm',
+  formula = y~poly(x, 2, raw=TRUE),
+  mapping = aes(
+    color = 'Grad 2'
+  )
+)
+gg = gg + geom_smooth(
+  method = 'glm',
+  formula = y~poly(x, 3, raw=TRUE),
+  mapping = aes(
+    color = 'Grad 3'
+  )
+)
+gg = gg + geom_smooth(
+  method = 'glm',
+  formula = y~poly(x, 8, raw=TRUE),
+  mapping = aes(
+    color = 'Grad 8'
+  )
+)
+gg = gg + scale_colour_manual(name="legend", values=c("green", "blue", "red"))
+gg
+```
+
+- Grad $2$: Die Anpassung wirkt in gar keinem Bereich wirklich gut.
+- Grad $3$: Die Anpassung folgt besser dem verlauf, wirkt aber auch nicht wirklich gut.
+- Grad $8$: Von $13$ bis $53$ Millisekunden wirkt die Anpassung sehr gut. An den Rändern stößt am auf größere Abweichungen, die durch den hohen Interpolationsgrad zu erklären sind.
 
