@@ -7,6 +7,7 @@ header-includes:
 - \usepackage{amsmath,amssymb,amsthm}
 - \usepackage{dsfont}
 - \usepackage{listings}
+- \usepackage{enumitem}
 - \usepackage{floatrow}
 - \usepackage{fancyhdr}
 - \pagestyle{fancy}
@@ -93,7 +94,35 @@ gg + geom_smooth(
 )
 ```
 
+## Aufgabe 2
 
+Der erste Term
+
+$$
+\sum_{i=1}^n (y_i - g(x_i))^2
+$$
+
+ist der Least Squares Term. Dieser wird minimal, wenn die Kurven die Trainingspunkte interpolieren. Der zweite Term
+
+$$
+\lambda \int_a^b \left\vert g^{(3)} (x) \right\vert^2\ dx
+$$
+
+ist ein der Glättungsterm (Misst die ''Kurvigkeit der Funktion'') mit Glättungsparameter $\lambda$, der als Strafterm den Funktionswert für starke Veränderungen erhöht. Die Ableitung einer Funktion ist ein Maß für die ''Veränderung'' einer Funktion. Das heißt, je höher die Ableitung, desto stärker misst man Veränderungen. $\lambda$ ist dann das Gewicht für den Strafterm. 
+Erhöht man den Wert des Strafterms für die Veränderung, so steigt der Trainingsfehler (Die Funktion wird glatter und interpoliert weniger). 
+
+$\hat g_2$ lässt kurvigere Funktionen als $\hat g_1$ zu und kann somit besser interpolieren (Kleinerer Trainingsfehler).
+Für $\lambda \to \infty$ wird der Strafterm maximiert und nur noch eine maximal glatte Funktion zugelassen, sprich die Zielfunktion strebt gegen eine Gerade.
+Für $\lambda \to 0$ wird der Strafterm minimiert, somit ignoriert und folglich strebt die Funktion gegen die Interpolation.
+
+Somit erhalten wir:
+
+\begin{enumerate}[label=\alph*)]
+\item $\hat g_1$ hat im Allgemeinen einen kleineren Trainingsfehler, da die Zielfunktion langsamer sich einer Geraden annähert.
+\item $\hat g_2$ hat im Allgemeinen einen kleineren Testfehler, da starke Schwankungen schneller glatt gebügelt werden.
+\item $\hat g_2$ hat im Allgemeinen einen kleineren Trainingsfehler, da stärkere Interpolation.
+\item $\hat g_1$ hat im Allgemeinen einen kleineren Testfehler, da schwächere Interpolation.
+\end{enumerate}
 
 
 
