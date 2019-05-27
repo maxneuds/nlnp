@@ -105,6 +105,8 @@ gg + geom_smooth(
 )
 ```
 
+\cleardoublepage
+
 ## Aufgabe 2
 
 Der erste Term
