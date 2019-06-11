@@ -1,0 +1,152 @@
+---
+output: pdf_document
+header-includes: 
+- \usepackage[utf8]{inputenc}
+- \usepackage[T1]{fontenc}
+- \usepackage[ngerman]{babel}
+- \usepackage{amsmath,amssymb,amsthm}
+- \usepackage{dsfont}
+- \usepackage{listings}
+- \usepackage{enumitem}
+- \usepackage{floatrow}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- '\fancyhead[C,C]{Gruppe 5: Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}'
+- \fancyhead[L]{}
+- \fancyhead[R]{}
+- \fancyfoot[C,C]{\thepage}
+- \renewcommand{\footrulewidth}{0.4pt}
+- \newcommand{\argmin}{\operatorname{arg}\min}
+- \newcommand{\R}{\mathds{R}}
+---
+
+<style type="text/css">
+body{
+  font-size: 12px;
+}
+h1 {
+  font-size: 18px;
+}
+h1 {
+  font-size: 14px;
+}
+h1 {
+  font-size: 12px;
+}
+</style>
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
+                      collapse=TRUE,     # collapse by default
+                      echo=TRUE,         # echo code by default
+                      comment = "#>",    # change comment character
+                      fig.width = 10,     # set figure width
+                      out.width = "100%", # set width of displayed images
+                      warning=TRUE,      # show R warnings
+                      message=FALSE)     # show R messages
+```
+
+<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
+
+```{r, echo=FALSE}
+set.seed(42)
+usepackage = function(p) 
+{
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE)
+  require(p, character.only = TRUE)
+}
+usepackage('ggplot2')
+usepackage('MASS')
+usepackage('tidyr')
+usepackage('splines')
+```
+
+# Praktikum 8
+
+# Aufgabe 1
+
+### a)  
+```{r}
+quad = lm(accel ~ times + I(times^2) + I((times-median(times))^2*(times>median(times))), data=mcycle)
+cub = lm(accel ~ times + I(times^2)+ I(times^3) + I((times-median(times))^3*(times>median(times))), data=mcycle)
+
+summary(quad)
+summary(cub)
+
+ggplot(mcycle, aes(x=times, y=accel)) +
+  geom_point() +
+  geom_line(mcycle, mapping=aes(x=times, y=predict(quad), color="Quad"))+
+  geom_line(mcycle, mapping=aes(x=times, y=predict(cub), color="Cub"))
+  
+```
+
+### b)
+```{r}
+compute_quantiles = function(i) {
+  k = seq(0, 1, length.out=i+2)
+  return (quantile(mcycle$times, probs = k[2:(length(k)-1)]))
+}
+
+k = 20
+
+mse_quad = c()
+mse_cub = c()
+
+loocv=function(fit){
+  h=lm.influence(fit)$h
+  pred <- predict(fit)
+  return(mean((pred-mcycle$accel)^2))
+}
+
+mse_quad = c()
+mse_cub = c()
+for(i in 1:k) {
+  quad <- lm(mcycle$accel ~ bs(mcycle$times, degree = 2, knots = compute_quantiles(i)), data=mcycle)
+  cub <- lm(mcycle$accel ~ bs(mcycle$times, degree = 3, knots = compute_quantiles(i)), data=mcycle)
+  mse_quad <- append(mse_quad, loocv(quad))
+  mse_cub <- append(mse_cub, loocv(cub))
+}
+
+mse <- NULL
+mse$quad <- mse_quad
+mse$cub <- mse_cub
+mse <- as.data.frame(mse)
+mse2 <- cbind(mse, seq(1:20))
+names(mse2)[3] <- "index"
+mse2 <- gather(mse2, key=key, value=value, -index)
+mse2
+gather(mse)
+ggplot(aes(x=index, y=value, col=key), data = mse2) +
+  geom_line() +
+  xlab("Anzahl Knoten") + 
+  ylab("Mean Squared Error") +
+  ggtitle("MSE in Abhängigkeit der Knotenanzahl")
+```
+Ab 5 Knoten scheint sich der Mean Squared Error nicht mehr signifikant zu verbessern, die optimale Anzahl an Knoten würden wir deshalb auf 5 festlegen.
+
+### c)
+```{r}
+compute_params <- function(d, K){
+  return(d+K+1)
+}
+
+quad_1_params <- compute_params(2, 1)
+quad_5_params <- compute_params(2, 5)
+
+cub_1_params <- compute_params(3, 1)
+
+cub_5_params <- compute_params(3, 5)
+
+quad_1_params
+quad_5_params
+cub_1_params
+cub_5_params
+```
+### d)
+```{r}
+ns_reg <- lm(mcycle$accel ~ ns(mcycle$times, df = 9), data=mcycle)
+ggplot(aes(x=times, y=accel), data=mcycle) +
+  geom_point() +
+  geom_line(aes(x=times, y=predict(ns_reg)), data=mcycle)
+```
