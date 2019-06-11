@@ -59,11 +59,91 @@ usepackage = function(p)
 usepackage('ggplot2')
 usepackage('MASS')
 usepackage('tidyr')
+usepackage('splines')
 ```
 
 # Praktikum 8
 
 ## Aufgabe 1
+
+### a)
+
+```{r}
+quad = lm(accel ~ times + I(times^2) + I((times-median(times))^2*(times>median(times))), data=mcycle)
+cub = lm(accel ~ times + I(times^2)+ I(times^3) + I((times-median(times))^3*(times>median(times))), data=mcycle)
+summary(quad)
+summary(cub)
+ggplot(mcycle, aes(x=times, y=accel)) +
+  geom_point() +
+  geom_line(mcycle, mapping=aes(x=times, y=predict(quad), color="Quad"))+
+  geom_line(mcycle, mapping=aes(x=times, y=predict(cub), color="Cub"))
+  
+```
+
+### b)
+```{r}
+compute_quantiles = function(i) {
+  k = seq(0, 1, length.out=i+2)
+  return (quantile(mcycle$times, probs = k[2:(length(k)-1)]))
+}
+k = 20
+mse_quad = c()
+mse_cub = c()
+loocv=function(fit){
+  h=lm.influence(fit)$h
+  pred <- predict(fit)
+  return(mean((pred-mcycle$accel)^2))
+}
+mse_quad = c()
+mse_cub = c()
+for(i in 1:k) {
+  quad <- lm(mcycle$accel ~ bs(mcycle$times, degree = 2, knots = compute_quantiles(i)), data=mcycle)
+  cub <- lm(mcycle$accel ~ bs(mcycle$times, degree = 3, knots = compute_quantiles(i)), data=mcycle)
+  mse_quad <- append(mse_quad, loocv(quad))
+  mse_cub <- append(mse_cub, loocv(cub))
+}
+mse <- NULL
+mse$quad <- mse_quad
+mse$cub <- mse_cub
+mse <- as.data.frame(mse)
+mse2 <- cbind(mse, seq(1:20))
+names(mse2)[3] <- "index"
+mse2 <- gather(mse2, key=key, value=value, -index)
+mse2
+gather(mse)
+ggplot(aes(x=index, y=value, col=key), data = mse2) +
+  geom_line() +
+  xlab("Anzahl Knoten") + 
+  ylab("Mean Squared Error") +
+  ggtitle("MSE in Abhängigkeit der Knotenanzahl")
+```
+
+Ab 5 Knoten scheint sich der Mean Squared Error nicht mehr signifikant zu verbessern, die optimale Anzahl an Knoten würden wir deshalb auf 5 festlegen.
+
+### c)
+```{r}
+compute_params <- function(d, K){
+  return(d+K+1)
+}
+quad_1_params <- compute_params(2, 1)
+quad_5_params <- compute_params(2, 5)
+cub_1_params <- compute_params(3, 1)
+cub_5_params <- compute_params(3, 5)
+quad_1_params
+quad_5_params
+cub_1_params
+cub_5_params
+```
+
+### d)
+```{r}
+ns_reg <- lm(mcycle$accel ~ ns(mcycle$times, df = 9), data=mcycle)
+ggplot(aes(x=times, y=accel), data=mcycle) +
+  geom_point() +
+  geom_line(aes(x=times, y=predict(ns_reg)), data=mcycle)
+```
+
+## Aufgabe 1 (Alternativ)
 
 ```{r}
 df = mcycle
@@ -206,14 +286,83 @@ gg = ggplot(
 )
 gg = gg + geom_point()
 gg + geom_line(
-  data = df3, 
-  color = 'red', 
-  aes(x = x, y = y)
+  data = df3,
+  aes(x = x, y = y, color = "Cube")
+) + geom_line(
+  data = df2,
+  aes(x = x, y = y, color = "Quad")
 )
 ```
-
-### b)
 
 ### c)
 
 Die Anzahl an freien Parametern wird berechnet mittels $d + K + 1$ mit $d$ Grad und $K$ Knotenanzahl.
+
+## A2
+
+### a)
+
+Sei $[a,b]$ das Regressionsintervall, dann wird ein linearer Anfang und Abgang gefordert. Sprich es folgen die Bedingungen:
+
+\begin{align}
+& f''(a) = 0 \\
+& f''(b) = 0
+\end{align}
+
+### b)
+
+Seien $f''(a) = f''(b) = 0$. Zunächst leiten wird ab.
+
+\begin{align}
+& f'(x)
+= \sum_{j = 1}^3 j a_j x^{j - 1} + 3 \sum_{k = 1}^K b_k (x - \xi_k)_+^2\\
+& f''(x)
+= 2 a_2 + 6 a_3 x + 6 \sum_{k = 1}^K b_k(x - \xi_k)_+
+\end{align}
+
+Nun setzen wir die Bedingungen ein. Wir nutzen aus, dass grundsätzlich $(a - \xi_k)_+ = 0$ und $(b - \xi_k)_+ > 0$ gilt. Dies folgt aus $a < \xi_1 < \dots < \xi_K < b$.
+
+\begin{align}
+f''(a)
+& = 2 a_2 + 6 a_3 a + 6 \sum_{k = 1}^K b_k(a - \xi_k)_+
+= 0\\
+& \implies a_2 + 3 a_3 a = 0 \implies a_2 = a_3 = 0
+\end{align}
+
+Alternativ könnte man auch $a_2 = - 3 a_3$ fordern, aber da wir die Wahl haben, nehmen wir die einfache Bedingung. Ferner folgt nun:
+
+\begin{align}
+f''(b)
+& = \sum_{k = 1}^K b_k(b - \xi_k)_+
+= 0\\
+& \implies \sum_{k = 1}^K b_k = \frac 1 b \sum_{k = 1}^K b_k \xi_k \implies \sum_{k = 1}^K b_k = \sum_{k = 1}^K b_k \xi_k = 0
+\end{align}
+
+Für alle $k$ ist $\frac{\xi_k}{b} \in (0, 1)$ wodurch obige Gleichung nur dann gelten kann, wenn beide Summen Null sind.
+
+
+### c)
+
+Ein kubischer Spline mit $K$ Knoten hat $K + 4$ freie Parameter. Nun haben wir vier weitere Nebenbedingungen, wodurch wir vier Freiheitsgrade verlieren und folglich haben wir nur noch $K$ freie Parameter.
+
+### d)
+
+Ohne viel aufzuschreiben macht man sich klar, dass dass die Ableitungen einfach sind insofern, dass die Potenzen aggregiert als $6$ vor die Summe verschwinden. Weiter nutzt man, dass $(a - \xi_k)_+ = 0$ und $(b - \xi_k)_+ > 0$ gilt und wir erhalten:
+
+\begin{align}
+& f''(a)
+= 6 \sum_{k = 1}^{K-2} \tilde b_k \cdot 0 = 0\\
+& f''(b) = 6 \sum_{k = 1}^{K-2} \left( \frac{b - \xi_k -b + \xi_K}{\xi_K - \xi_k} - \frac{b - \xi_{K-1} -b + \xi_K}{\xi_K - \xi_{K - 1}} \right)
+= = 6 \sum_{k = 1}^{K-2} (1 - 1) = 0
+\end{align}
+
+Folglich lässt sich jeder natürliche kubische Spline über die angegebene Basiserweiterung darstellen.
+
+
+
+
+
+
+
+
+
