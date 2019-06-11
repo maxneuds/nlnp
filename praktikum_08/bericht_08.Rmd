@@ -1,0 +1,219 @@
+---
+output: pdf_document
+header-includes: 
+- \usepackage[utf8]{inputenc}
+- \usepackage[T1]{fontenc}
+- \usepackage[ngerman]{babel}
+- \usepackage{amsmath,amssymb,amsthm}
+- \usepackage{dsfont}
+- \usepackage{listings}
+- \usepackage{enumitem}
+- \usepackage{floatrow}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- '\fancyhead[C,C]{Gruppe 5: Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}'
+- \fancyhead[L]{}
+- \fancyhead[R]{}
+- \fancyfoot[C,C]{\thepage}
+- \renewcommand{\footrulewidth}{0.4pt}
+- \newcommand{\argmin}{\operatorname{arg}\min}
+- \newcommand{\R}{\mathds{R}}
+---
+
+<style type="text/css">
+body{
+  font-size: 12px;
+}
+h1 {
+  font-size: 18px;
+}
+h1 {
+  font-size: 14px;
+}
+h1 {
+  font-size: 12px;
+}
+</style>
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
+                      collapse=TRUE,     # collapse by default
+                      echo=TRUE,         # echo code by default
+                      comment = "#>",    # change comment character
+                      fig.width = 10,     # set figure width
+                      out.width = "100%", # set width of displayed images
+                      warning=TRUE,      # show R warnings
+                      message=FALSE)     # show R messages
+```
+
+<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
+
+```{r, echo=FALSE}
+set.seed(42)
+usepackage = function(p) 
+{
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE)
+  require(p, character.only = TRUE)
+}
+usepackage('ggplot2')
+usepackage('MASS')
+usepackage('tidyr')
+```
+
+# Praktikum 8
+
+## Aufgabe 1
+
+```{r}
+df = mcycle
+x = df$times
+y = df$accel
+```
+
+### a)
+
+```{r}
+med = median(df$times)
+knots = c(med)
+```
+
+#### Quadratisch
+
+```{r}
+h = function(x, knots, d, i) {
+  if (i <= d + 1) {
+    out = x**(i-1)
+    return(out)
+  } 
+  else {
+    out = (x - knots[i-d-1])
+    out = ifelse(out < 0, 0, out)
+    out = out ** d
+    return(out)
+  }
+}
+Z = function(X, knots, d) {
+  h1 = h(X, knots, d, 1)
+  h2 = h(X, knots, d, 2)
+  h3 = h(X, knots, d, 3)
+  h4 = h(X, knots, d, 4)
+  v = c(h1, h2, h3, h4)
+  out = matrix(
+    data = v,
+    nrow = length(h1),
+    ncol = 4
+  )
+  return(out)
+}
+transpose = function(M) sapply(1:nrow(M), function(i) M[i,])
+X = Z(x, knots, 2)
+XT = transpose(X)
+hatb = ginv(XT %*% X) %*% XT %*% y
+f = function(x, hatb, knots, d) {
+  h1 = h(x, knots, d, 1)
+  h2 = h(x, knots, d, 2)
+  h3 = h(x, knots, d, 3)
+  h4 = h(x, knots, d, 4)
+  v = c(h1, h2, h3, h4)
+  out = hatb[1] * h1 + hatb[2] * h2 + hatb[3] * h3 + hatb[4] * h4
+  return(out)
+}
+f2 = function(x) {
+  return(f(x, hatb, knots, 2))
+}
+haty = f(x, hatb, knots, 2)
+df2 = data.frame(x = x, y = haty)
+```
+
+Plot:
+
+```{r}
+gg = ggplot(
+  data = df,
+  mapping = aes(
+    x = times,
+    y = accel
+  )
+)
+gg = gg + geom_point()
+gg + geom_line(
+  data = df2, 
+  color = 'red', 
+  aes(x = x, y = y)
+)
+```
+
+#### Kubisch
+
+```{r}
+h = function(x, knots, d, i) {
+  if (i <= d + 1) {
+    out = x**(i-1)
+    return(out)
+  } 
+  else {
+    out = (x - knots[i-d-1])
+    out = ifelse(out < 0, 0, out)
+    out = out ** d
+    return(out)
+  }
+}
+Z = function(X, knots, d) {
+  h1 = h(X, knots, d, 1)
+  h2 = h(X, knots, d, 2)
+  h3 = h(X, knots, d, 3)
+  h4 = h(X, knots, d, 4)
+  h5 = h(X, knots, d, 5)
+  v = c(h1, h2, h3, h4, h5)
+  out = matrix(
+    data = v,
+    nrow = length(h1),
+    ncol = 5
+  )
+  return(out)
+}
+transpose = function(M) sapply(1:nrow(M), function(i) M[i,])
+X = Z(x, knots, 3)
+XT = transpose(X)
+hatb = ginv(XT %*% X) %*% XT %*% y
+f = function(x, hatb, knots, d) {
+  h1 = h(x, knots, d, 1)
+  h2 = h(x, knots, d, 2)
+  h3 = h(x, knots, d, 3)
+  h4 = h(x, knots, d, 4)
+  h5 = h(x, knots, d, 5)
+  v = c(h1, h2, h3, h4, h5)
+  out = hatb[1] * h1 + hatb[2] * h2 + hatb[3] * h3 + hatb[4] * h4 + hatb[5] * h5
+  return(out)
+}
+f3 = function(x) {
+  return(f(x, hatb, knots, 3))
+}
+haty = f(x, hatb, knots, 3)
+df3 = data.frame(x = x, y = haty)
+```
+
+Plot:
+
+```{r}
+gg = ggplot(
+  data = df,
+  mapping = aes(
+    x = times,
+    y = accel
+  )
+)
+gg = gg + geom_point()
+gg + geom_line(
+  data = df3, 
+  color = 'red', 
+  aes(x = x, y = y)
+)
+```
+
+### b)
+
+### c)
+
+Die Anzahl an freien Parametern wird berechnet mittels $d + K + 1$ mit $d$ Grad und $K$ Knotenanzahl.

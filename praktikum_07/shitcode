@@ -1,6 +1,0 @@
-\begin{tabular}{l | c c c c}
-$t$ & $10$ & $20$ & $30$ & $40$ \\
-\hline
-$g_2(t)$ - `r predict` &  $`r d2[1]`$ &  $`r d2[2]`$ &  $`r d2[3]`$ &  $`r d2[4]`$\\
-$g_3(t)$ - `r predict` &  $`r d3[1]`$ &  $`r d3[2]`$ &  $`r d3[3]`$ &  $`r d3[4]`$
-\end{tabular}
