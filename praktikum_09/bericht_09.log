@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2019.6.11)  24 JUN 2019 17:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2019.6.11)  24 JUN 2019 17:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -462,7 +462,37 @@ Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
 )
 Package hyperref Info: Option `breaklinks' set `true' on input line 28.
+(c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
 
+(c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.
+cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 147.
+
+(c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex
+.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+(c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/fancyvrb/fancyvrb.s
+ty
+Package: fancyvrb 2019/01/15
+Style option: `fancyvrb' v3.2a <2019/01/15> (tvz)
+\FV@CodeLineNo=\count113
+\FV@InFile=\read1
+\FV@TabBox=\box29
+\c@FancyVerbLine=\count114
+\FV@StepNumber=\count115
+\FV@OutFile=\write3
+) (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip47
+\fb@frw=\dimen124
+\fb@frh=\dimen125
+\FrameRule=\dimen126
+\FrameSep=\dimen127
+)
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.s
 ty
 Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
@@ -478,13 +508,9 @@ cs.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 99.
-
-(c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex
-.def
-File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
-))
-\Gin@req@height=\dimen124
-\Gin@req@width=\dimen125
+)
+\Gin@req@height=\dimen128
+\Gin@req@width=\dimen129
 )
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/oberdiek/grffile.st
 y
@@ -496,9 +522,9 @@ Package grffile Info: \Gin@ii of package `graphicx' fixed on input line 494.
 )
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/titling/titling.sty
 Package: titling 2009/09/04 v2.1d maketitle typesetting
-\thanksmarkwidth=\skip47
-\thanksmargin=\skip48
-\droptitle=\skip49
+\thanksmarkwidth=\skip48
+\thanksmargin=\skip49
+\droptitle=\skip50
 ) (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2018/08/11 v2.0j Standard LaTeX package
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/t1enc.def
@@ -521,12 +547,12 @@ Language: ngermanb 2018/12/08 v2.11 German support for babel (post-1996 orthogr
 aphy)
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/babel.def
 File: babel.def 2019/06/03 3.32 Babel common definitions
-\babel@savecnt=\count113
-\U@D=\dimen126
+\babel@savecnt=\count116
+\U@D=\dimen130
 
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/txtbabel.de
 f)
-\bbl@dirlevel=\count114
+\bbl@dirlevel=\count117
 )
 
 Package babel Warning: No hyphenation patterns were preloaded for
@@ -546,9 +572,9 @@ Package: amsthm 2017/10/31 v2.20.4
 \thm@headfont=\toks26
 \thm@notefont=\toks27
 \thm@headpunct=\toks28
-\thm@preskip=\skip50
-\thm@postskip=\skip51
-\thm@headsep=\skip52
+\thm@preskip=\skip51
+\thm@postskip=\skip52
+\thm@headsep=\skip53
 \dth@everypar=\toks29
 )
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/doublestroke/dsfont
@@ -557,25 +583,25 @@ Package: dsfont 1995/08/01 v0.1 Double stroke roman fonts
 )
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/listings/listings.s
 ty
-\lst@mode=\count115
-\lst@gtempboxa=\box29
+\lst@mode=\count118
+\lst@gtempboxa=\box30
 \lst@token=\toks30
-\lst@length=\count116
-\lst@currlwidth=\dimen127
-\lst@column=\count117
-\lst@pos=\count118
-\lst@lostspace=\dimen128
-\lst@width=\dimen129
-\lst@newlines=\count119
-\lst@lineno=\count120
-\lst@maxwidth=\dimen130
+\lst@length=\count119
+\lst@currlwidth=\dimen131
+\lst@column=\count120
+\lst@pos=\count121
+\lst@lostspace=\dimen132
+\lst@width=\dimen133
+\lst@newlines=\count122
+\lst@lineno=\count123
+\lst@maxwidth=\dimen134
 
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/listings/lstmisc.st
 y
 File: lstmisc.sty 2019/02/27 1.8b (Carsten Heinz)
-\c@lstnumber=\count121
-\lst@skipnumbers=\count122
-\lst@framebox=\box30
+\c@lstnumber=\count124
+\lst@skipnumbers=\count125
+\lst@framebox=\box31
 )
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/listings/listings.c
 fg
@@ -586,12 +612,12 @@ Package: listings 2019/02/27 1.8b (Carsten Heinz)
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/enumitem/enumitem.s
 ty
 Package: enumitem 2019/02/04 v3.8 Customized lists
-\labelindent=\skip53
-\enit@outerparindent=\dimen131
+\labelindent=\skip54
+\enit@outerparindent=\dimen135
 \enit@toks=\toks31
-\enit@inbox=\box31
-\enit@count@id=\count123
-\enitdp@description=\count124
+\enit@inbox=\box32
+\enit@count@id=\count126
+\enitdp@description=\count127
 )
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/floatrow/floatrow.s
 ty
@@ -601,90 +627,90 @@ Package: floatrow 2008/08/02 v0.3b floatrow: float package extension
 y
 Package: caption3 2018/09/12 v1.8c caption3 kernel (AR)
 Package caption3 Info: TeX engine: e-TeX on input line 64.
-\captionmargin=\dimen132
-\captionmargin@=\dimen133
-\captionwidth=\dimen134
-\caption@tempdima=\dimen135
-\caption@indent=\dimen136
-\caption@parindent=\dimen137
-\caption@hangindent=\dimen138
+\captionmargin=\dimen136
+\captionmargin@=\dimen137
+\captionwidth=\dimen138
+\caption@tempdima=\dimen139
+\caption@indent=\dimen140
+\caption@parindent=\dimen141
+\caption@hangindent=\dimen142
 )
-\c@float@type=\count125
+\c@float@type=\count128
 \float@exts=\toks32
-\float@box=\box32
-\@floatcapt=\box33
+\float@box=\box33
+\@floatcapt=\box34
 Package floatrow Info: Modified float package code loaded on input line 455.
 Package floatrow Info: Modified rotfloat package code loaded on input line 473.
 
 \FR@everyfloat=\toks33
 \flrow@foot=\insert199
-\FB@wd=\dimen139
-\FBo@wd=\dimen140
-\FBc@wd=\dimen141
-\FBo@ht=\skip54
-\FBc@ht=\skip55
-\FBf@ht=\skip56
-\FBo@max=\skip57
-\FBc@max=\skip58
-\FBf@max=\skip59
-\c@FBl@b=\count126
-\floatbox@depth=\count127
-\c@FRobj=\count128
-\c@FRsobj=\count129
-\Xhsize=\skip60
-\sXhsize=\skip61
-\Zhsize=\skip62
-\sZhsize=\skip63
-\flrow@rowbox=\box34
-\FR@Zunitlength=\dimen142
-\c@FBcnt=\count130
-\FPOScnt=\count131
-\LTleft=\skip64
-\LTright=\skip65
-\LTleft=\skip66
-\LTright=\skip67
+\FB@wd=\dimen143
+\FBo@wd=\dimen144
+\FBc@wd=\dimen145
+\FBo@ht=\skip55
+\FBc@ht=\skip56
+\FBf@ht=\skip57
+\FBo@max=\skip58
+\FBc@max=\skip59
+\FBf@max=\skip60
+\c@FBl@b=\count129
+\floatbox@depth=\count130
+\c@FRobj=\count131
+\c@FRsobj=\count132
+\Xhsize=\skip61
+\sXhsize=\skip62
+\Zhsize=\skip63
+\sZhsize=\skip64
+\flrow@rowbox=\box35
+\FR@Zunitlength=\dimen146
+\c@FBcnt=\count133
+\FPOScnt=\count134
+\LTleft=\skip65
+\LTright=\skip66
+\LTleft=\skip67
+\LTright=\skip68
 \flrow@types=\toks34
 )
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.s
 ty
 Package: fancyhdr 2019/01/31 v3.10 Extensive control of page headers and footer
 s
-\f@nch@headwidth=\skip68
-\f@nch@O@elh=\skip69
-\f@nch@O@erh=\skip70
-\f@nch@O@olh=\skip71
-\f@nch@O@orh=\skip72
-\f@nch@O@elf=\skip73
-\f@nch@O@erf=\skip74
-\f@nch@O@olf=\skip75
-\f@nch@O@orf=\skip76
+\f@nch@headwidth=\skip69
+\f@nch@O@elh=\skip70
+\f@nch@O@erh=\skip71
+\f@nch@O@olh=\skip72
+\f@nch@O@orh=\skip73
+\f@nch@O@elf=\skip74
+\f@nch@O@erf=\skip75
+\f@nch@O@olf=\skip76
+\f@nch@O@orf=\skip77
 ) (./bericht_09.aux)
 \openout1 = `bericht_09.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 101.
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 101.
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 101.
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 101.
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 101.
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 101.
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 101.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 101.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 141.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 141.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 141.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 141.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 141.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 141.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 141.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 141.
 
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 101.
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 101.
-LaTeX Font Info:    ... okay on input line 101.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 101.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 141.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 141.
+LaTeX Font Info:    ... okay on input line 141.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 141.
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -722,8 +748,8 @@ File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\AtBeginShipoutBox=\box35
-Package hyperref Info: Link coloring OFF on input line 101.
+\AtBeginShipoutBox=\box36
+Package hyperref Info: Link coloring OFF on input line 141.
 
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.st
 y
@@ -733,14 +759,14 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 string.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count132
+\c@section@level=\count135
 )
-LaTeX Info: Redefining \ref on input line 101.
-LaTeX Info: Redefining \pageref on input line 101.
-LaTeX Info: Redefining \nameref on input line 101.
+LaTeX Info: Redefining \ref on input line 141.
+LaTeX Info: Redefining \pageref on input line 141.
+LaTeX Info: Redefining \nameref on input line 141.
 (./bericht_09.out) (./bericht_09.out)
-\@outlinefile=\write3
-\openout3 = `bericht_09.out'.
+\@outlinefile=\write4
+\openout4 = `bericht_09.out'.
 
 
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/oberdiek/epstopdf-b
@@ -762,80 +788,143 @@ f-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\c@lstlisting=\count133
+\c@lstlisting=\count136
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-(c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/color.sty
-Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
+[1{c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdft
+ex.map}
 
-(c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.
-cfg
-File: color.cfg 2016/01/02 v1.6 sample color configuration
-)
-Package color Info: Driver file: pdftex.def on input line 147.
-)
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 113.
+]
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 155.
 
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 113.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 155.
 
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 113
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 155
 .
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 113
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 155
 .
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 113.
+(Font)              <10> on input line 155.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 113.
+(Font)              <7> on input line 155.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 113.
-LaTeX Font Info:    Try loading font information for U+msa on input line 113.
+(Font)              <5> on input line 155.
+LaTeX Font Info:    Try loading font information for U+msa on input line 155.
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 113.
+LaTeX Font Info:    Try loading font information for U+msb on input line 155.
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1{c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pd
-ftex.map}
+) [2
 
 ]
-LaTeX Font Info:    Try loading font information for U+dsrom on input line 239.
+LaTeX Font Info:    Try loading font information for U+dsrom on input line 281.
 
 
 (c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/doublestroke/Udsrom
 .fd
 File: Udsrom.fd 1995/08/01 v0.1 Double stroke roman font definitions
+) [3]
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 299.
+
+(c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 253.
-[2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 253.
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 300.
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 304.
+
+<bericht_09_files/figure-latex/unnamed-chunk-3-1.pdf, id=92, 722.7pt x 325.215p
+t>
+File: bericht_09_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type pd
+f)
+<use bericht_09_files/figure-latex/unnamed-chunk-3-1.pdf>
+Package pdftex.def Info: bericht_09_files/figure-latex/unnamed-chunk-3-1.pdf  u
+sed on input line 352.
+(pdftex.def)             Requested size: 469.76045pt x 211.3922pt.
+[4
+
+]
+<bericht_09_files/figure-latex/unnamed-chunk-4-1.pdf, id=100, 722.7pt x 325.215
+pt>
+File: bericht_09_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pd
+f)
+<use bericht_09_files/figure-latex/unnamed-chunk-4-1.pdf>
+Package pdftex.def Info: bericht_09_files/figure-latex/unnamed-chunk-4-1.pdf  u
+sed on input line 381.
+(pdftex.def)             Requested size: 469.76045pt x 211.3922pt.
+[5 <./bericht_09_files/figure-latex/unnamed-chunk-3-1.pdf>]
+<bericht_09_files/figure-latex/unnamed-chunk-5-1.pdf, id=110, 722.7pt x 325.215
+pt>
+File: bericht_09_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (type pd
+f)
+<use bericht_09_files/figure-latex/unnamed-chunk-5-1.pdf>
+Package pdftex.def Info: bericht_09_files/figure-latex/unnamed-chunk-5-1.pdf  u
+sed on input line 396.
+(pdftex.def)             Requested size: 469.76045pt x 211.3922pt.
+[6 <./bericht_09_files/figure-latex/unnamed-chunk-4-1.pdf> <./bericht_09_files/
+figure-latex/unnamed-chunk-5-1.pdf>]
+<bericht_09_files/figure-latex/unnamed-chunk-6-1.pdf, id=127, 722.7pt x 325.215
+pt>
+File: bericht_09_files/figure-latex/unnamed-chunk-6-1.pdf Graphic file (type pd
+f)
+<use bericht_09_files/figure-latex/unnamed-chunk-6-1.pdf>
+Package pdftex.def Info: bericht_09_files/figure-latex/unnamed-chunk-6-1.pdf  u
+sed on input line 447.
+(pdftex.def)             Requested size: 469.76045pt x 211.3922pt.
+[7]
+<bericht_09_files/figure-latex/unnamed-chunk-6-2.pdf, id=133, 722.7pt x 325.215
+pt>
+File: bericht_09_files/figure-latex/unnamed-chunk-6-2.pdf Graphic file (type pd
+f)
+<use bericht_09_files/figure-latex/unnamed-chunk-6-2.pdf>
+Package pdftex.def Info: bericht_09_files/figure-latex/unnamed-chunk-6-2.pdf  u
+sed on input line 486.
+(pdftex.def)             Requested size: 469.76045pt x 211.3922pt.
+[8 <./bericht_09_files/figure-latex/unnamed-chunk-6-1.pdf>]
+<bericht_09_files/figure-latex/unnamed-chunk-6-3.pdf, id=143, 722.7pt x 325.215
+pt>
+File: bericht_09_files/figure-latex/unnamed-chunk-6-3.pdf Graphic file (type pd
+f)
+<use bericht_09_files/figure-latex/unnamed-chunk-6-3.pdf>
+Package pdftex.def Info: bericht_09_files/figure-latex/unnamed-chunk-6-3.pdf  u
+sed on input line 504.
+(pdftex.def)             Requested size: 469.76045pt x 211.3922pt.
+[9 <./bericht_09_files/figure-latex/unnamed-chunk-6-2.pdf> <./bericht_09_files/
+figure-latex/unnamed-chunk-6-3.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 536.
+[10]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 536.
 (./bericht_09.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 253.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 253.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 536.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 536.
 Package rerunfilecheck Info: File `bericht_09.out' has not changed.
-(rerunfilecheck)             Checksum: 8E1702838C7B0848A36A721786D22E29;574.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 253.
+(rerunfilecheck)             Checksum: CCC6528D60BBE09FBC65CA1E1BBE5318;903.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 536.
  ) 
 Here is how much of TeX's memory you used:
- 13721 strings out of 494553
- 199566 string characters out of 6176038
- 291112 words of memory out of 5000000
- 17186 multiletter control sequences out of 15000+600000
- 40898 words of font info for 42 fonts, out of 8000000 for 9000
+ 14266 strings out of 494553
+ 208892 string characters out of 6176038
+ 300402 words of memory out of 5000000
+ 17703 multiletter control sequences out of 15000+600000
+ 41854 words of font info for 45 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 37i,18n,43p,240b,356s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,18n,43p,365b,384s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.en
 c}{c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathi
 t.enc}{c:/Users/mneu/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-m
@@ -852,11 +941,14 @@ TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/Users/mneu/AppData/Roami
 ng/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/mneu/AppData/Ro
 aming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/mneu/AppData/
 Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/mneu/AppD
-ata/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb>
-Output written on bericht_09.pdf (2 pages, 135081 bytes).
+ata/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/Users/mneu/A
+ppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/mn
+eu/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/User
+s/mneu/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on bericht_09.pdf (10 pages, 271071 bytes).
 PDF statistics:
- 113 PDF objects out of 1000 (max. 8388607)
- 97 compressed objects within 1 object stream
- 20 named destinations out of 1000 (max. 500000)
- 57 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 225 PDF objects out of 1000 (max. 8388607)
+ 185 compressed objects within 2 object streams
+ 34 named destinations out of 1000 (max. 500000)
+ 135 words of extra memory for PDF output out of 10000 (max. 10000000)
 
