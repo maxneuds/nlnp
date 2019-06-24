@@ -1,0 +1,232 @@
+---
+output: pdf_document
+header-includes: 
+- \usepackage[utf8]{inputenc}
+- \usepackage[T1]{fontenc}
+- \usepackage[ngerman]{babel}
+- \usepackage{amsmath,amssymb,amsthm}
+- \usepackage{dsfont}
+- \usepackage{listings}
+- \usepackage{enumitem}
+- \usepackage{floatrow}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- '\fancyhead[C,C]{Gruppe 5: Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}'
+- \fancyhead[L]{}
+- \fancyhead[R]{}
+- \fancyfoot[C,C]{\thepage}
+- \renewcommand{\footrulewidth}{0.4pt}
+- \newcommand{\argmin}{\operatorname{arg}\min}
+- \newcommand{\R}{\mathds{R}}
+---
+
+<style type="text/css">
+body{
+  font-size: 12px;
+}
+h1 {
+  font-size: 18px;
+}
+h1 {
+  font-size: 14px;
+}
+h1 {
+  font-size: 12px;
+}
+</style>
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
+                      collapse=TRUE,     # collapse by default
+                      echo=TRUE,         # echo code by default
+                      comment = "#>",    # change comment character
+                      fig.width = 10,     # set figure width
+                      out.width = "100%", # set width of displayed images
+                      warning=TRUE,      # show R warnings
+                      message=FALSE)     # show R messages
+```
+
+<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
+
+```{r, echo=FALSE}
+set.seed(42)
+usepackage = function(p) 
+{
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE)
+  require(p, character.only = TRUE)
+}
+usepackage("locfit")
+usepackage("caret")
+```
+
+# A3)
+### a)
+```{r}
+set.seed(1337)
+data(ethanol)
+
+loessMod10 <- loess(NOx ~ E, data=ethanol, span=0.1) # 10% smoothing span
+loessMod30 <- loess(NOx ~ E, data=ethanol, span=0.3) # 25% smoothing span
+loessMod50 <- loess(NOx ~ E, data=ethanol, span=0.5)
+
+spans = seq(0.1, 1, 0.02)
+
+#Randomly shuffle the data
+data <- ethanol[sample(nrow(ethanol)),]
+#Create 10 equally size folds
+folds <- cut(seq(1,nrow(data)),breaks=5,labels=FALSE)
+#Perform 10 fold cross validation
+test <- matrix(NA, ncol=2, nrow = length(spans))
+mse1 <- c()
+for (span in spans){
+  mse <- c()
+  for(j in 1:5){
+    #Segement your data by fold using the which() function 
+    testIndexes <- which(folds==j,arr.ind=TRUE)
+    testData <- data[testIndexes, ]
+    trainData <- data[-testIndexes, ]
+    #Use the test and train data partitions however you desire...
+    
+    fit <- loess(NOx ~ E, data=trainData, span=span, control = loess.control(surface="direct"))
+    
+    y.pred <- predict(fit, newdata = testData$E)
+    y.true = testData$NOx
+    
+    mse <- append(mse, mean((y.pred-y.true)^2))
+
+  }
+  mse1 <- append(mse1, mean(mse))
+}
+
+test <- NULL
+test$spans <- spans
+test$mse <- mse1
+test <- as.data.frame(test)
+
+plot(test)
+
+opt_spans <- test$spans[test$mse == min(test[,"mse"])]
+opt_spans
+loessMod_opt <- loess(NOx ~ E, data=ethanol, span=opt_spans)
+```
+### b)
+```{r}
+tricube_10 <- locfit(NOx~lp(E,nn=0.1), data=ethanol)
+tricube_30 <- locfit(NOx~lp(E,nn=0.3), data=ethanol)
+tricube_50 <- locfit(NOx~lp(E,nn=0.5), data=ethanol)
+tricube_opt <- locfit(NOx~lp(E,nn=opt_spans), data=ethanol)
+
+plot(ethanol$NOx, x=ethanol$E, main="Local Regression: Different Smoothing Params", xlab="E", ylab="NOx")
+lines(tricube_10, col="red")
+lines(tricube_30, col="black")
+lines(tricube_50, col="blue")
+lines(tricube_opt, col="green", lw=2)
+```
+### c)
+```{r}
+lin <- locfit(NOx ~ E, data=ethanol, alpha = 0.2, deg=1)
+quad <- locfit(NOx ~ E, data=ethanol, alpha = 0.2, deg=2)
+
+plot(ethanol$NOx, x=ethanol$E, main="Linear vs Quadratic Local Regression", xlab="E", ylab="NOx")
+lines(lin, col="red")
+lines(quad, col="green")
+
+lin_pred <- cbind(predict(lin, newdata = c(0.65)), predict(lin, newdata = c(9)))
+quad_pred <- cbind(predict(quad, newdata = c(0.65)), predict(quad, newdata = c(9)))
+
+preds <- as.data.frame(rbind(lin_pred, quad_pred), row.names = c("lin","quad"))
+colnames(preds) <- c("0.65", "9")
+preds
+```
+
+### d)
+```{r}
+set.seed(1337)
+
+mse1 <- c()
+for (span in spans){
+  mse <- c()
+  for(j in 1:5){
+    #Segement your data by fold using the which() function 
+    testIndexes <- which(folds==j,arr.ind=TRUE)
+    testData <- data[testIndexes, ]
+    trainData <- data[-testIndexes, ]
+    #Use the test and train data partitions however you desire...
+    
+    fit <- locfit(NOx ~ E, data=trainData, alpha = span, deg=1)
+    
+    y.pred <- predict(fit, newdata = testData$E)
+    y.true = testData$NOx
+    
+    mse <- append(mse, mean((y.pred-y.true)^2))
+
+  }
+  mse1 <- append(mse1, mean(mse))
+}
+
+lin_cv <- NULL
+lin_cv$spans <- spans
+lin_cv$mse <- mse1
+lin_cv <- as.data.frame(lin_cv)
+
+plot(lin_cv)
+
+opt_lin <- lin_cv$spans[lin_cv$mse == min(lin_cv[,"mse"])]
+opt_lin
+
+mse1 <- c()
+for (span in spans){
+  mse <- c()
+  for(j in 1:5){
+    #Segement your data by fold using the which() function 
+    testIndexes <- which(folds==j,arr.ind=TRUE)
+    testData <- data[testIndexes, ]
+    trainData <- data[-testIndexes, ]
+    #Use the test and train data partitions however you desire...
+    
+    fit <- locfit(NOx ~ E, data=trainData, alpha = span, deg=2)
+    
+    y.pred <- predict(fit, newdata = testData$E)
+    y.true = testData$NOx
+    
+    mse <- append(mse, mean((y.pred-y.true)^2))
+
+  }
+  mse1 <- append(mse1, mean(mse))
+}
+
+quad_cv <- NULL
+quad_cv$spans <- spans
+quad_cv$mse <- mse1
+quad_cv <- as.data.frame(quad_cv)
+
+plot(quad_cv)
+
+opt_quad <- quad_cv$spans[quad_cv$mse == min(quad_cv[,"mse"])]
+opt_quad
+
+lin_opt <- locfit(NOx ~ E, data=ethanol, alpha = opt_lin, deg=1)
+quad_opt <- locfit(NOx ~ E, data=ethanol, alpha = opt_quad, deg=2)
+
+plot(ethanol$NOx, x=ethanol$E, main="Linear vs Quadratic Local Regression (optimal alphas)", xlab="E", ylab="NOx")
+lines(lin_opt, col="red")
+lines(quad_opt, col="green")
+```
+
+
+### f)
+```{r}
+sum(residuals(loessMod10)^2)
+sum(residuals(loessMod30)^2)
+sum(residuals(loessMod50)^2)
+sum(residuals(loessMod_opt)^2)
+
+sum(residuals(tricube_10)^2)
+sum(residuals(tricube_30)^2)
+sum(residuals(tricube_50)^2)
+sum(residuals(tricube_opt)^2)
+
+sum(residuals(lin_opt)^2)
+sum(residuals(quad_opt)^2)
+```
