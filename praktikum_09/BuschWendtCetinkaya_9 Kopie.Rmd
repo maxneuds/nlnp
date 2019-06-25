@@ -1,0 +1,166 @@
+---
+author: Alisia Wendt, Kiran Busch, Betuel Cetinkaya
+date: \today
+output: pdf_document
+header-includes: 
+    - \usepackage{amsthm}
+    - \usepackage{xcolor}
+documentclass: article
+<!---output: beamer_presentation--->
+---
+
+
+
+
+
+<!--- Below are global settings for knitr. You can override any of them by adding the changes to individual chunks --->
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
+                      collapse=TRUE,     # collapse by default
+                      echo=TRUE,         # echo code by default
+                      comment = "#>",    # change comment character
+                      fig.width = 9,     # set figure width
+                      out.width = "90%", # set width of displayed images
+                      warning=TRUE,      # show R warnings
+                      message=FALSE)     # show R messages
+
+packageTest<- function(x)  {
+    if (!require(x,character.only = TRUE))  {
+      install.packages(x,dep=TRUE)
+      if(!require(x,character.only = TRUE)) stop("Package not found")
+    }
+}
+
+options(warn=-1)
+```
+
+
+<!--- Solution Region --->
+<style>
+#solution {
+  background-color: #8FBC8F;
+  border-style: solid;
+  border-color: blue;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  padding: 5px;
+}
+</style>
+
+
+
+<!---**Wintersemester 2016 |Studiengang Data Science | Hochschule Darmstadt **--->
+
+
+
+
+\theoremstyle{break}
+\newtheorem{auf}{Aufgabe}
+
+\newcommand{\R}{{\sffamily R} }
+
+\begin{centering}
+%\vspace{-2 cm}
+\Huge
+{\bf Uebung 9}\\
+\Large
+Nichtparametrische und nichtlineare Modelle\\
+\normalsize
+SoSe 2019\\
+Antje Jahn (FBMN, h\_da)\\
+Kiran Busch, Alisia Wendt, Betuel Cetinkaya\\
+\end{centering}
+
+# Aufgabe 1
+
+```{r, echo=FALSE}
+library(MASS)
+library(splines)
+library(dplyr)
+library(tidyr)
+packageTest("tidyverse")
+mcycle <- mcycle
+
+```
+
+## e)
+Wir fuehren im Folgenden eine Parametrisierung fuer die effective degrees of freedom des smoothing Splines durch. Dabei variieren wir den Wert von 2 bis 30 und untersuchen anschliessend anhand einer Grafik, welcher Wert den geringsten Fehler liefert. Den Fehler berechnen wir mit Hilfe des Leave One Out Cross Validations (siehe Option cv = TRUE).
+```{r}
+# remove duplicated values for cross validaton:
+my_data <- mcycle
+my_data <- my_data[!duplicated(my_data$times), ]
+
+k <- 30
+sse_ <- c()
+for(j in 2:k) {
+  smspl <- smooth.spline(x=my_data$times, y=my_data$accel, df=j, cv=TRUE)
+  sse_ = append(sse_, smspl$cv.crit)
+}
+df_res_ = data.frame(df=2:k, SSE=sse_)
+
+df_res_ %>%
+  ggplot(., aes(x=df, y=SSE))+
+  geom_line()+ ggtitle("CV SSE") + 
+  theme_bw()
+
+smsplDf <- smooth.spline(x=my_data$times, y=my_data$accel, df=10)
+smspl$lambda
+```
+Optimale Wert fuer die effektive degrees of freedom ist laut der Grafik 10. Der Wert fuer lambda betraegt in diesem Fall ca. 0.00000126.
+
+## f)
+In diesem Aufgabenteil variieren wir den Wert fuer lambda einer smoothing Spline und untersuchen anschliessen den besten Parameter erneut mit Hilfe des Leave One Out Cross Validation (vgl. Aufgabenteil e) ).
+```{r}
+lamb <- seq(0.0,1, 0.01)
+
+sse_ <- c()
+for(j in lamb) {
+  smspl <- smooth.spline(x=my_data$times, y=my_data$accel, lambda=j, cv=TRUE)
+  sse_ = append(sse_, smspl$cv.crit)
+}
+df_res_ = data.frame(lambda=lamb, SSE=sse_)
+
+df_res_ %>%
+  ggplot(., aes(x=lambda, y=SSE))+
+  geom_line()+ ggtitle("CV SSE") + 
+  theme_bw()
+
+smsplLamb <- smooth.spline(x=mcycle$times, y=mcycle$accel, lambda=0.0)
+smspl$df
+```
+Wenn wir die smoothing Spline in Abhaehngigkeit von lambda optimieren, erkennen wir auf der Grafik, dass der kleinstmoegliche Wert fuer lambda der optimale ist: lambda=0. Der Wert fuer den effective degree of freedom betraegt in diesem Fall ca. 2.175 Somit ist der Wert fuer df verglichen mit e) gesunken. 
+
+## g)
+In diesem Aufgabenteil moechten wir die beiden parametrisierten smoothing Spline-Modelle mit den polynomialen (Grad 2, 3, 8) aus Aufgabenblatt 7 vergleichen.
+```{r}
+poly2 <- lm(data=mcycle, accel ~ poly(times, 2))
+poly3 <- lm(data=mcycle, accel ~ poly(times, 3))
+poly8 <- lm(data=mcycle, accel ~ poly(times, 8))
+
+plot(mcycle$times, mcycle$accel, xlab="times", ylab="acceleration")
+lines(mcycle$times, predict(poly2), type="l", col="orange", lwd=2)
+lines(mcycle$times, predict(poly3), type="l", col="green", lwd=2)
+lines(mcycle$times, predict(poly8), type="l", col="black", lwd=2)
+lines(my_data$times, predict(smsplDf)$y, type="l", col="blue", lwd=2)
+lines(my_data$times, predict(smsplLamb)$y, type="l", col="magenta", lwd=2)
+
+legend("bottomright",
+       legend=c("poly2", "poly3", "poly8", "smoothingSpine (df = 10)", "smoothingSpline (lambda = 0)"),
+       col=c("orange", "green", "black", "blue", "magenta"),
+       lty=1, lwd=1)
+
+```
+In der Grafik erkennen wir, dass das smoothing Spline-Modell mit lambda=0 sehr zackelig verlaeuft und die Trainingsdaten overfittet. Im Falle des smoothing Spline-Modells mit df=10 hingegen erkennen wir eine relativ gute Anpassung der Datenpunkte. Vergleichen wir dieses Modell mit den Polynomen, so erkennen wir, dass er eine bessere Prognose fuer kleine Werte $times$ liefert als das beste Polynom und somit eine bessere generalisierte Anpassung der Trainingsdaten.
+
+
+# Aufgabe 4 
+Lambda gegen $\infty$: große Bandbreite, alle Punkte in einer Bandbreite, dies entspricht einer hohen Glaettung. Der geschaetzte Wert $\hat{y}_i$ entsprciht der linearen Regression $\hat{b_0}+\hat{b_1}x_i$
+
+Lambda gegen $0$: kleine Bandbreite, die Prognose ist sehr zackelig, jeder Punkt wird für sich betrachtet. Der geschaetzte Wert $\hat{y}_i$ geht gegen den Wert im Trainings-Datensatz $y_j$.
+
+
+
+
+
+
