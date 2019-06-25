@@ -464,7 +464,7 @@ lines(quad_opt, col="green")
 - Kleinste Varianz: K-Nearest Neighbor
 - Größer Bias: K-Nearest Nighbor
 
-und Lokal lineare Regression liegt dazwischen, was in Anbetracht des Bias-Variance-Tradeoff Sinn ergibt.
+und Lokal lineare Regression liegt dazwischen, was in Anbetracht des Bias-Variance-Tradeoff Sinn ergibt, da die Verfahren alle gleich sind mit K-Nearest Grad $0$, Lokal Linear Grad $1$ und Lokal Quadratisch Grad $2$. Das heißt, dass Lokal quadratisch am besten fitten kann, während K-Nearest am meisten glättet.
 
 ### f)
 
