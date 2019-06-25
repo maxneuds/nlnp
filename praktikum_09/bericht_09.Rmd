@@ -48,27 +48,113 @@ knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
 
 <!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 set.seed(42)
-usepackage = function(p) 
+usepackage = function(package_name) 
 {
+  p = deparse(substitute(package_name))
   if (!is.element(p, installed.packages()[,1]))
     install.packages(p, dep = TRUE)
   require(p, character.only = TRUE)
 }
-usepackage('ggplot2')
-usepackage('MASS')
-usepackage('tidyr')
-usepackage('splines')
-usepackage("locfit")
-usepackage("caret")
+usepackage(ggplot2)
+usepackage(MASS)
+usepackage(deployr)
+usepackage(tidyverse)
+usepackage(tidyr)
+usepackage(splines)
+usepackage(locfit)
+usepackage(caret)
 ```
 
 # Praktikum 9
 
 ## A1
 
-### a)
+## e)
+
+Wir führen im Folgenden eine Parametrisierung für die effective degrees of freedom des smoothing Splines durch. Dabei variieren wir den Wert von $2$ bis $30$ und untersuchen anschließend anhand einer Grafik, welcher Wert den geringsten Fehler liefert.
+Den Fehler berechnen wir mit Hilfe einer Leave One Out Cross Validations (siehe Option `cv = TRUE`).
+
+```{r}
+# remove duplicated values for cross validaton:
+my_data <- mcycle
+my_data <- my_data[!duplicated(my_data$times), ]
+
+k <- 30
+sse_ <- c()
+for(j in 2:k) {
+  smspl <- smooth.spline(x=my_data$times, y=my_data$accel, df=j, cv=TRUE)
+  sse_ = append(sse_, smspl$cv.crit)
+}
+df_res_ = data.frame(df=2:k, SSE=sse_)
+
+df_res_ %>%
+  ggplot(., aes(x=df, y=SSE))+
+  geom_line()+ ggtitle("CV SSE") + 
+  theme_bw()
+
+smsplDf <- smooth.spline(x=my_data$times, y=my_data$accel, df=10)
+lambda = smspl$lambda
+```
+
+Der optimale Wert für die effektive degrees of freedom ist laut Grafik $10$.
+Wir erhalten $\lambda \approx `r lambda`$.
+
+## f)
+
+In diesem Aufgabenteil variieren wir den Wert für $\lambda$ eines Smoothing Spline und ermitterln anschließend den besten Parameter erneut mit LOOCV.
+
+```{r}
+lamb <- seq(0.0,1, 0.01)
+
+sse_ <- c()
+for(j in lamb) {
+  smspl <- smooth.spline(x=my_data$times, y=my_data$accel, lambda=j, cv=TRUE)
+  sse_ = append(sse_, smspl$cv.crit)
+}
+df_res_ = data.frame(lambda=lamb, SSE=sse_)
+
+df_res_ %>%
+  ggplot(., aes(x=lambda, y=SSE))+
+  geom_line()+ ggtitle("CV SSE") + 
+  theme_bw()
+
+smsplLamb <- smooth.spline(x=mcycle$times, y=mcycle$accel, lambda=0.0)
+degf = round(smspl$df, 2)
+```
+
+Wenn wir den Smoothing Spline in Abhähngigkeit von $\lambda$ optimieren, erkennen wir auf der Grafik, dass der kleinstmögliche Wert für $\lambda = 0$ der Optimale ist. 
+Der Wert für den effective degree of freedom beträgt in diesem Fall etwa $`r degf`$ und damit geringer als in "e)".
+
+## g)
+
+Jetzt vergleichen wir die beiden parametrisierten Smoothing Spline Modelle mit den polynomialen (Grad $2, 3, 8$) aus Aufgabenblatt 7 vergleichen.
+
+```{r}
+poly2 <- lm(data=mcycle, accel ~ poly(times, 2))
+poly3 <- lm(data=mcycle, accel ~ poly(times, 3))
+poly8 <- lm(data=mcycle, accel ~ poly(times, 8))
+
+plot(mcycle$times, mcycle$accel, xlab="times", ylab="acceleration")
+lines(mcycle$times, predict(poly2), type="l", col="orange", lwd=2)
+lines(mcycle$times, predict(poly3), type="l", col="green", lwd=2)
+lines(mcycle$times, predict(poly8), type="l", col="black", lwd=2)
+lines(my_data$times, predict(smsplDf)$y, type="l", col="blue", lwd=2)
+lines(my_data$times, predict(smsplLamb)$y, type="l", col="magenta", lwd=2)
+
+legend("bottomright",
+       legend=c("poly2", "poly3", "poly8", "smoothingSpine (df = 10)", "smoothingSpline (lambda = 0)"),
+       col=c("orange", "green", "black", "blue", "magenta"),
+       lty=1, lwd=1)
+
+```
+
+- $\lambda = 0$: Die Kurve verläuft nicht glatt durch die Trainingsdaten und neight zur Interpolation. Der Verlauf entspricht, nach Sichtprüfung, etwa dem der Punkte. 
+- $\operatorname{df} = 10$: Die Kurve läuft glatt durch die Punkte und der Verlauf entsprcht etwa dem der Punkte.
+- Die anderen drei Polynome sind glatt, aber der Verlauf der Punkte wird insbesondere an den Ecken nicht sinnvoll wiedergegeben.
+
+Das beste Ergebnis nach Sichtprüfung erzielt der Smoothing Spline mit $\operatorname{df} = 10$.
 
 
 \cleardoublepage
@@ -369,6 +455,17 @@ lines(lin_opt, col="red")
 lines(quad_opt, col="green")
 ```
 
+\cleardoublepage
+
+### e)
+
+- Größte Varianz: Lokal quadratisch
+- Kleiner Bias: Lokal quadratisch
+- Kleinste Varianz: K-Nearest Neighbor
+- Größer Bias: K-Nearest Nighbor
+
+und Lokal lineare Regression liegt dazwischen, was in Anbetracht des Bias-Variance-Tradeoff Sinn ergibt.
+
 ### f)
 
 ```{r}
@@ -386,9 +483,22 @@ sum(residuals(lin_opt)^2)
 sum(residuals(quad_opt)^2)
 ```
 
+\cleardoublepage
 
+## A4
 
+Der Gauß Kernel ist definiert als
 
+\begin{align}
+K_\lambda (x, x_i)
+= \frac{1}{\sqrt{2 \pi} \lambda}
+\exp\left(
+- \frac{(x - x_i)^2}{2 \lambda^2}
+\right)
+\end{align}
 
+Der Kernel gewichtet jeden Datenpunkt zusätzlich zu Least Squares
 
+- $\lambda \to \infty$: Große Bandbreite (über alle Daten). Der Gauß Kernel konvergiert gegen 0, der Abstand zwischen $x_j$ und den $x_i$ bekommt einen kleinen Skalar und führt deshalb dazu, dass der Wert $\hat{y}_i$ dem der linearen Regression $\hat{b_0}+\hat{b_1}x_i$ entspricht.
+- $\lambda \to 0$: Geringe Bandbreite (nur der Punkt selbst). Der Gauß Kernel konvergiert gegen 0, der Abstand zwischen $x_j$ und den $x_i$ bekommt einen großen Skalar und führt deshalb dazu, dass der Wert $\hat{y}_i$ gegen $y_j$ konvergiert und somit interpoliert.
 
