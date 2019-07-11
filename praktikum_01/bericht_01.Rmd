@@ -1,0 +1,68 @@
+---
+title: 'NLNP Praktikum 1'
+author: 'Robin Baudisch, Merlin Kopfmann, Maximilian Neudert'
+output:
+  pdf_document:
+    latex_engine: lualatex
+    includes:
+      in_header: 'style/preamble.tex'
+      before_body: 'style/prefix.tex'
+    fig_caption: true
+    fig_width: 10
+    fig_height: 5
+    df_print: kable
+    toc: false
+fontsize: 11pt
+geometry: 'margin=1in'
+---
+
+```{r global_options, echo=FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  error = TRUE,
+  out.width = "100%",
+  tidy = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r, echo=FALSE}
+usepackage = function(package_name) 
+{
+  p = deparse(substitute(package_name))
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE, repos = "http://cran.us.r-project.org")
+  require(p, character.only = TRUE)
+}
+
+usepackage(formatR)
+usepackage(ggplot2)
+usepackage(tidyr)
+
+set.seed(42)
+```
+
+# A1
+
+## a)
+
+Im folgenden sei $\E(\bullet) = \E(\bullet \vert x = 1)$. Wir rechnen:
+
+\begin{align}
+\E[(Y - \hat b x)^2]
+& = \E[(Y - \E(Y) + \E(Y) - \hat b x)^2]\\
+& = \E[(Y- \E(Y))^2 + 2(Y - \E(Y))(\E(Y) - \hat b x) + (\E(Y)  - \hat bx)^2]\\
+& = \V(Y) + \E[ (\E(Y) - \hat b x)^2 ]\\
+& = \V(bx + \varepsilon) + \E[(\E(bx + \varepsilon) - \hat b x)^2]\\
+& = \V(bx) + \V(\varepsilon) + \E[(\E(bx) + \E(\varepsilon) - \hat b x)^2]\\
+& = 0 + \sigma^2 + \E[(2 + 0 - 2.2)^2]
+= \sigma^2 + 0.04
+= 4.04
+\end{align}
+
+## b)
+
+Schaut man sich das Ergebnis in \quote{a)} an, so stellt man fest, dass für den Punkt $x = 1$ der irreduceable Error $\sigma^2$ bereits so groß ist, dass die Abweichung in $\hat b$ weniger ins Gewicht fällt. Deswegen fällt hier der Unterschied mit $0.04$ zum optimalen Modell verhältnismäßig klein aus.

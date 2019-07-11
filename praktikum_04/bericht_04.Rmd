@@ -1,53 +1,53 @@
 ---
-output: pdf_document
-header-includes: 
-- \usepackage[utf8]{inputenc}
-- \usepackage[T1]{fontenc}
-- \usepackage[ngerman]{babel}
-- \usepackage{amsmath,amssymb,amsthm}
-- \usepackage{dsfont}
-- \usepackage{listings}
-- \usepackage{floatrow}
-- \usepackage{fancyhdr}
-- \pagestyle{fancy}
-- \fancyhead[C,C]{Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}
-- \fancyhead[L]{}
-- \fancyhead[R]{}
-- \fancyfoot[C,C]{\thepage}
-- \renewcommand{\footrulewidth}{0.4pt}
+title: 'NLNP Praktikum 4'
+author: 'Robin Baudisch, Merlin Kopfmann, Maximilian Neudert'
+output:
+  pdf_document:
+    latex_engine: lualatex
+    includes:
+      in_header: 'style/preamble.tex'
+      before_body: 'style/prefix.tex'
+    fig_caption: true
+    fig_width: 10
+    fig_height: 5
+    df_print: kable
+    toc: false
+fontsize: 11pt
+geometry: 'margin=1in'
 ---
 
-<style type="text/css">
-body{
-  font-size: 12px;
-}
-h1 {
-  font-size: 18px;
-}
-h1 {
-  font-size: 14px;
-}
-h1 {
-  font-size: 12px;
-}
-</style>
-
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
-                      collapse=TRUE,     # collapse by default
-                      echo=TRUE,         # echo code by default
-                      comment = "#>",    # change comment character
-                      fig.width = 10,     # set figure width
-                      out.width = "100%", # set width of displayed images
-                      warning=TRUE,      # show R warnings
-                      message=FALSE)     # show R messages
+```{r global_options, echo=FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  comment = "",
+  echo = TRUE,
+  error = TRUE,
+  out.width = "100%",
+  tidy = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
 ```
 
-<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
+```{r, echo=FALSE}
+usepackage = function(package_name) 
+{
+  p = deparse(substitute(package_name))
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE, repos = "http://cran.us.r-project.org")
+  require(p, character.only = TRUE)
+}
 
-# Aufgabe 1
+usepackage(formatR)
+usepackage(ggplot2)
+usepackage(tidyr)
 
-```{r}
+set.seed(42)
+```
+
+# A1
+
+```{r, echo = FALSE}
 set.seed(123)
 gendata = function (x, beta, len) {
   return (beta * log(x) + rnorm(len))
@@ -90,7 +90,8 @@ allpol[,6] <- mean((y3-allpol[,1])^2)
 AIC100_lin <- mean(alllin[,7])
 AIC100_poly <- mean(allpol[,7])
 ```
-```{r}
+
+```{r, echo = FALSE}
 alllin20 <- matrix(NA,nrow=10000,ncol=7)
 colnames(alllin20) <- c("fdach","y", "quadVor","EBias", "VarFDach","EQuadVor", "AIC")
 allpol20 <- matrix(NA,nrow=10000,ncol=7)
@@ -130,7 +131,7 @@ AIC20_lin <- mean(alllin20[,7])
 AIC20_poly <- mean(allpol20[,7])
 ```
 
-```{r}
+```{r, echo = FALSE}
 cat("AIC (Linear):")
 cat("\n")
 cat("AIC (n=100)")
@@ -153,7 +154,8 @@ cat("\n")
 AIC20_poly
 ```
 
-```{r}
+```{r, echo = FALSE}
+cat("________________________")
 cat("Quadratischer Vorhersagefehler (Linear):")
 cat("\n")
 cat("Quadratischer Vorhersagefehler (n=100)")
@@ -175,35 +177,35 @@ cat("Quadratischer Vorhersagefehler (n=20)")
 cat("\n")
 head(allpol20[,6],1)
 ```
-Der durchschnittliche AIC im Falle n=20 ist für das lineare Modell mit $AIC = 61.68768$ kleiner als im polynomialen Modell mit $AIC = 62.13233$. 
-Im Falle n=100 ist das polynomiale Modell laut dem AIC besser ($AIC = 290.6327$) als das lineare Modell ($AIC = 297.949$). 
-Dies stimmt mit den Ergebnissen der geschätzten quadratischen Vorhersagefehlern überein. Bei n=20 ist das lineare Modell leicht besser, im Falle n=100 produziert das polynomiale Modell die genaueren Vorhersagen.
+Der durchschnittliche AIC im Falle $n=20$ ist für das lineare Modell mit $AIC = 61.74$ kleiner als im polynomialen Modell mit $AIC = 62.19$. 
+Im Falle $n=100$ ist das polynomiale Modell laut dem AIC besser ($AIC = 290.44$) als das lineare Modell ($AIC = 297.66$). 
+Dies stimmt mit den Ergebnissen der geschätzten quadratischen Vorhersagefehlern überein. Bei $n=20$ ist das lineare Modell leicht besser, im Falle $n=100$ produziert das polynomiale Modell die genaueren Vorhersagen.
 
-# Aufgabe 2
+# A2
 
 ## a)
 
-```{r}
+```{r, echo = FALSE}
 library(car)
 library(ggplot2)
 data <- Prestige
 data$census <- NULL
 data <- data[complete.cases(data),]
 data$type1 <- as.numeric((data$type))
-ggplot(data=data,aes(x=data$education,y=data$income))+geom_jitter()
-ggplot(data=data,aes(x=data$education,y=data$women))+geom_jitter()
-ggplot(data=data,aes(x=data$education,y=data$prestige))+geom_jitter()
-ggplot(data=data,aes(x=data$type,y=data$education))+geom_boxplot(aes(group=data$type))
-ggplot(data=data,aes(x=data$income,y=data$women))+geom_jitter()
-ggplot(data=data,aes(x=data$income,y=data$prestige))+geom_jitter()
-ggplot(data=data,aes(x=data$type,y=data$income))+geom_boxplot(aes(group=data$type))
-ggplot(data=data,aes(x=data$women,y=data$prestige))+geom_jitter()
-ggplot(data=data,aes(x=data$type,y=data$women))+geom_boxplot(aes(group=data$type))
-ggplot(data=data,aes(x=data$type,y=data$prestige))+geom_boxplot(aes(group=data$type))
+ggplot(data=data,aes(x=data$education,y=data$income)) + geom_jitter()
+ggplot(data=data,aes(x=data$education,y=data$women)) + geom_jitter()
+ggplot(data=data,aes(x=data$education,y=data$prestige)) + geom_jitter()
+ggplot(data=data,aes(x=data$type,y=data$education)) + geom_boxplot(aes(group=data$type))
+ggplot(data=data,aes(x=data$income,y=data$women)) + geom_jitter()
+ggplot(data=data,aes(x=data$income,y=data$prestige)) + geom_jitter()
+ggplot(data=data,aes(x=data$type,y=data$income)) + geom_boxplot(aes(group=data$type))
+ggplot(data=data,aes(x=data$women,y=data$prestige)) + geom_jitter()
+ggplot(data=data,aes(x=data$type,y=data$women)) + geom_boxplot(aes(group=data$type))
+ggplot(data=data,aes(x=data$type,y=data$prestige))+ geom_boxplot(aes(group=data$type))
 data$type <- NULL
 ```
 
-```{r}
+```{r, echo = FALSE}
 # 1.
 model1 <- lm(data = data, prestige~income)
 
@@ -275,5 +277,5 @@ results
 
 ## b)
 
-Um AIC-Werte miteinander vergleichen zu können, müssen die Modelle auf den gleichen Daten trainiert worden sein.
+Um AIC-Werte miteinander vergleichen zu können, müssen die Modelle auf den gleichen Daten trainiert werden.
 

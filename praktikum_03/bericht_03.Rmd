@@ -1,55 +1,51 @@
 ---
-output: pdf_document
-header-includes: 
-- \usepackage[utf8]{inputenc}
-- \usepackage[T1]{fontenc}
-- \usepackage[ngerman]{babel}
-- \usepackage{amsmath,amssymb,amsthm}
-- \usepackage{dsfont}
-- \usepackage{listings}
-- \usepackage{floatrow}
-- \usepackage{fancyhdr}
-- \pagestyle{fancy}
-- '\fancyhead[C,C]{Gruppe 5: Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}'
-- \fancyhead[L]{}
-- \fancyhead[R]{}
-- \fancyfoot[C,C]{\thepage}
-- \renewcommand{\footrulewidth}{0.4pt}
+title: 'NLNP Praktikum 3'
+author: 'Robin Baudisch, Merlin Kopfmann, Maximilian Neudert'
+output:
+  pdf_document:
+    latex_engine: lualatex
+    includes:
+      in_header: 'style/preamble.tex'
+      before_body: 'style/prefix.tex'
+    fig_caption: true
+    fig_width: 10
+    fig_height: 5
+    df_print: kable
+    toc: false
+fontsize: 11pt
+geometry: 'margin=1in'
 ---
 
-<style type="text/css">
-body{
-  font-size: 12px;
-}
-h1 {
-  font-size: 18px;
-}
-h1 {
-  font-size: 14px;
-}
-h1 {
-  font-size: 12px;
-}
-</style>
-
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
-                      collapse=TRUE,     # collapse by default
-                      echo=TRUE,         # echo code by default
-                      comment = "#>",    # change comment character
-                      fig.width = 10,     # set figure width
-                      out.width = "100%", # set width of displayed images
-                      warning=TRUE,      # show R warnings
-                      message=FALSE)     # show R messages
+```{r global_options, echo=FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  comment = "",
+  echo = TRUE,
+  error = TRUE,
+  out.width = "100%",
+  tidy = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
 ```
 
-<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
+```{r, echo=FALSE}
+usepackage = function(package_name) 
+{
+  p = deparse(substitute(package_name))
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE, repos = "http://cran.us.r-project.org")
+  require(p, character.only = TRUE)
+}
 
-```{r}
+usepackage(formatR)
+usepackage(ggplot2)
+usepackage(tidyr)
+
 set.seed(42)
 ```
 
-# Aufgabe 1
+# A1
 
 ## a)
 
