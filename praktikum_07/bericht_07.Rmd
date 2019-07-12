@@ -1,70 +1,59 @@
 ---
-output: pdf_document
-header-includes: 
-- \usepackage[utf8]{inputenc}
-- \usepackage[T1]{fontenc}
-- \usepackage[ngerman]{babel}
-- \usepackage{amsmath,amssymb,amsthm}
-- \usepackage{dsfont}
-- \usepackage{listings}
-- \usepackage{enumitem}
-- \usepackage{floatrow}
-- \usepackage{fancyhdr}
-- \pagestyle{fancy}
-- '\fancyhead[C,C]{Gruppe 5: Robin Baudisch, Merlin Kopfmann, Maximilian Neudert}'
-- \fancyhead[L]{}
-- \fancyhead[R]{}
-- \fancyfoot[C,C]{\thepage}
-- \renewcommand{\footrulewidth}{0.4pt}
-- \newcommand{\argmin}{\operatorname{arg}\min}
-- \newcommand{\R}{\mathds{R}}
+title: 'NLNP Praktikum 7'
+author: 'Robin Baudisch, Merlin Kopfmann, Maximilian Neudert'
+output:
+  pdf_document:
+    latex_engine: lualatex
+    includes:
+      in_header: 'style/preamble.tex'
+      before_body: 'style/prefix.tex'
+    fig_caption: true
+    fig_width: 10
+    fig_height: 5
+    df_print: kable
+    toc: false
+fontsize: 11pt
+geometry: 'margin=1in'
 ---
 
-<style type="text/css">
-body{
-  font-size: 12px;
-}
-h1 {
-  font-size: 18px;
-}
-h1 {
-  font-size: 14px;
-}
-h1 {
-  font-size: 12px;
-}
-</style>
-
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(error=TRUE,        # Keep compiling upon error
-                      collapse=TRUE,     # collapse by default
-                      echo=TRUE,         # echo code by default
-                      comment = "#>",    # change comment character
-                      fig.width = 10,     # set figure width
-                      out.width = "100%", # set width of displayed images
-                      warning=TRUE,      # show R warnings
-                      message=FALSE)     # show R messages
+```{r global_options, echo=FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  comment = "",
+  echo = TRUE,
+  error = TRUE,
+  out.width = "100%",
+  tidy = TRUE,
+  tidy.opts = list(blank = FALSE, width.cutoff = 60),
+  warning = FALSE,
+  message = FALSE
+)
 ```
-
-<!---** Hochschule Darmstadt | Studiengang Data Science | Sommersemester 2019 **--->
 
 ```{r, echo=FALSE}
-set.seed(42)
-usepackage = function(p) 
+usepackage = function(package_name) 
 {
+  p = deparse(substitute(package_name))
   if (!is.element(p, installed.packages()[,1]))
-    install.packages(p, dep = TRUE)
+    install.packages(p, dep = TRUE, repos = "http://cran.us.r-project.org")
   require(p, character.only = TRUE)
 }
-usepackage('ggplot2')
-usepackage('MASS')
-usepackage('tidyr')
-usepackage('boot')
+
+usepackage(formatR)
+usepackage(ggplot2)
+usepackage(tidyr)
+
+set.seed(42)
 ```
 
-# Praktikum 7
+<!---** Data Science **--->
 
-## Aufgabe 1
+```{r, echo=FALSE}
+usepackage(MASS)
+usepackage(boot)
+```
+
+# A1
 
 Zuerst berechnen wir die Punkte
 
@@ -107,7 +96,7 @@ gg + geom_smooth(
 
 \cleardoublepage
 
-## Aufgabe 2
+# A2
 
 Der erste Term
 
@@ -121,7 +110,7 @@ $$
 \lambda \int_a^b \left\vert g^{(3)} (x) \right\vert^2\ dx
 $$
 
-ist ein der Glättungsterm (Misst die ''Kurvigkeit der Funktion'') mit Glättungsparameter $\lambda$, der als Strafterm den Funktionswert für starke Veränderungen erhöht. Die Ableitung einer Funktion ist ein Maß für die ''Veränderung'' einer Funktion. Das heißt, je höher die Ableitung, desto stärker misst man Veränderungen. $\lambda$ ist dann das Gewicht für den Strafterm. 
+ist ein der Glättungsterm (Misst die 'Kurvigkeit der Funktion') mit Glättungsparameter $\lambda$, der als Strafterm den Funktionswert für starke Veränderungen erhöht. Die Ableitung einer Funktion ist ein Maß für die 'Veränderung' einer Funktion. Das heißt, je höher die Ableitung, desto stärker misst man Veränderungen. $\lambda$ ist dann das Gewicht für den Strafterm. 
 Erhöht man den Wert des Strafterms für die Veränderung, so steigt der Trainingsfehler (Die Funktion wird glatter und interpoliert weniger). 
 
 $\hat g_2$ lässt kurvigere Funktionen als $\hat g_1$ zu und kann somit besser interpolieren (Kleinerer Trainingsfehler).
@@ -139,19 +128,19 @@ Somit erhalten wir:
 
 \cleardoublepage
 
-## Aufgabe 3
+## A3
 
 ```{r}
-df = mcycle
+library(MASS)
 ```
 
-### a)
+## a)
 
 Zuerst schauen wir uns den Plot mit linearer Regression an.
 
 ```{r}
 gg = ggplot(
-  data = df,
+  data = mcycle,
   mapping = aes(
     x = times,
     y = accel
@@ -167,7 +156,7 @@ gg + geom_smooth(
 Dies sieht nicht so passend aus. Nun betrachten wir die diagnostischen Plots:
 
 ```{r, fig.height=9}
-lm = lm(accel~times, df)
+lm = lm(accel~times, mcycle)
 par(mfrow=c(2,2))
 plot(lm)
 ```
@@ -175,7 +164,7 @@ plot(lm)
 Der Scatterplot lässt vermuten, dass die Datenpunkte nicht linear verteilt sind (Modellverletzung).
 Dies erkennt man auch in den diagnostischen Plots, da die Residuen normalverteilt sein sollten, was sie aber nicht sind (Modellverletzung).
 
-### b)
+## b)
 
 Sei $P_n$ die Menge aller Polynome vom Grad $n$, also:
 
@@ -196,6 +185,7 @@ Dann sind unsere Modelle definiert durch:
 Da ein Polynom von Grad $n$ genau $n+1$ freie Parameter hat, hat $g_2$ 3 freie Parameter und $g_3$ 4 freie Parameter.
 
 ```{r}
+df = mcycle
 # models
 p2 = lm(accel~poly(times, 2, raw=TRUE), data=df)
 p3 = lm(accel~poly(times, 3, raw=TRUE), data=df)
@@ -235,8 +225,8 @@ Wir erhalten als Ergebnis
 \begin{tabular}{l | c c c c}
 $t$ & $10$ & $20$ & $30$ & $40$ \\
 \hline
-$g_2(t)$ &  $`r val2[1]`$ &  $`r val2[2]`$ &  $`r val2[3]`$ &  $`r val2[4]`$\\
-$g_3(t)$ &  $`r val3[1]`$ &  $`r val3[2]`$ &  $`r val3[3]`$ &  $`r val3[4]`$
+$g_2(t)$ &  $-32.37$ &  $-37.64$ &  $-31.04$ &  $-12.57$\\
+$g_3(t)$ &  $-32.79$ &  $-52.68$ &  $-23.16$ &  $13.71$
 \end{tabular}
 
 Zur Überprüfung haben wir die Differenzen berechnet und erhalten
@@ -244,24 +234,26 @@ Zur Überprüfung haben wir die Differenzen berechnet und erhalten
 \begin{tabular}{l | c c c c}
 $t$ & $10$ & $20$ & $30$ & $40$\\
 \hline
-$g_2(t) - \text{predict}$ &  $`r d2[1]`$ &  $`r d2[2]`$ &  $`r d2[3]`$ &  $`r d2[4]`$\\
-$g_3(t) - \text{predict}$ &  $`r d3[1]`$ &  $`r d3[2]`$ &  $`r d3[3]`$ &  $`r d3[4]`$
+$g_2(t) - \text{predict}$ & $0$ & $0$ & $0$ & $0$\\
+$g_3(t) - \text{predict}$ & $0$ & $0$ & $0$ & $0$
 \end{tabular}
 
 Um zu überprüfen, ob ein lineares Modell ausreichen würde, führen wir einen Anpassungstest auf den Residuen durch. Als Testmethode nehmen wir Shapiro-Wilk.
 
 ```{r}
+df = mcycle
 lm = lm(accel~times, data=df)
 sw = shapiro.test(lm$residuals)
 pval = round(sw$p.value, 5)
 sw
 ```
 
-Wir erhalten einen p-Wert von $`r pval`$ dieser ist deutlich kleiner als `0.05` somit können wir annehmen, dass die Residuen der linearen Regression nicht normalverteilt sind und folgich ist ein lineares Modell nicht ausreichend.
+Wir erhalten einen p-Wert von $0.00083$ dieser ist deutlich kleiner als `0.05` somit können wir annehmen, dass die Residuen der linearen Regression nicht normalverteilt sind und folgich ist ein lineares Modell nicht ausreichend.
 
-### c)
+## c)
 
 ```{r}
+df = mcycle
 deltas = matrix(ncol = 3, nrow = 10)
 for (p in seq(10)) {
   glm =  glm(accel~poly(times, p, raw=TRUE), data=df)
@@ -277,6 +269,7 @@ Wie wir sehen erhalten wir als bestes Modell eine polynomiale Regression von Gra
 Zur veranschaulichung plotten wir dieses:
 
 ```{r}
+df = mcycle
 gg = ggplot(
   data = df,
   mapping = aes(
@@ -291,13 +284,14 @@ gg + geom_smooth(
 )
 ```
 
-### d)
+## d)
 
 Das Polynom ist von Grad $8$ und besitzt somit $9$ freie Parameter.
 
-### e)
+## e)
 
 ```{r}
+df = mcycle
 p2 = glm(accel~poly(times, 2, raw=TRUE), data=df)
 p3 = glm(accel~poly(times, 3, raw=TRUE), data=df)
 p8 = glm(accel~poly(times, 8, raw=TRUE), data=df)
@@ -311,16 +305,17 @@ Wir erhalten als AIC Werte für die Modelle:
 \begin{tabular}{c | c}
 p & AIC\\
 \hline
-$2$ &  $`r aic2`$\\
-$3$ &  $`r aic3`$\\
-$8$ &  $`r aic8`$
+$2$ &  $1395$\\
+$3$ &  $1365$\\
+$8$ &  $1262$
 \end{tabular}
 
 Auch hier würden wir anhand des AIC das Modell mit Grad $8$ also mit $9$ Parametern wählen.
 
-### f)
+## f)
 
 ```{r}
+df = mcycle
 gg = ggplot(
   data = df,
   mapping = aes(

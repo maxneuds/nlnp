@@ -1,0 +1,15 @@
+base
+formatR
+ggplot2
+tidyr
+MASS
+tidyverse
+tibble
+readr
+purrr
+dplyr
+stringr
+forcats
+locfit
+lattice
+caret
